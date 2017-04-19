@@ -13,7 +13,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
           x: x,
           terrain: 0,
           roomId: 0,
-          player: 0
+          player: "false"
         });
       }
       // Once a row is filled, push it into the map array
@@ -47,12 +47,13 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
     };
 
     // Room format [roomId, size of room, y-coordinate of the origin, x-coordinate of the origin, array of connected rooms]
-    roomList.push([
-      curRoomId, size - margin * 2,
-      originY + margin,
-      originX + margin,
-      []
-    ]);
+    roomList.push({
+      roomId: curRoomId,
+      size: size - margin * 2,
+      y: originY + margin,
+      x: originX + margin,
+      connectedRooms: []
+    });
   }
 
   // Find the largest room size that can be made from the coordinates supplied
@@ -87,14 +88,10 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
   };
 
   // Function for deducing the rooms that are closest to each face of a room.  If a room is found by the scan, a list of tiles
-  // That are directly facing the current room in question is returned
+  // that are directly facing the current room in question is returned.  The list of tile, which are refered to as connectables
+  // are formatted as  [tile object = map[y][x], [y-distance to tile, x-distance to tile]].  Note that the actual cooridor length
+  // will either be y-distance to tile - 1 (top, bottom) or x-distance to tile - 1 (left, right)
   function corridorScan(room, direction) {
-    let roomId = room[0];
-    let roomSize = room[1];
-    let roomOriginY = room[2];
-    let roomOriginX = room[3];
-    let connectedRooms = room[4];
-
     let continueScan = true;
     let connectables = [];
 
@@ -105,34 +102,34 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
 
     switch (direction) {
       case "right":
-        roomOriginI = roomOriginY;
-        roomOriginJ = roomOriginX;
+        roomOriginI = room.y;
+        roomOriginJ = room.x;
         addRoomSize = 1;
         addScanSize = 1;
         break;
       case "left":
-        roomOriginI = roomOriginY;
-        roomOriginJ = roomOriginX;
+        roomOriginI = room.y;
+        roomOriginJ = room.x;
         addRoomSize = 0;
         addScanSize = -1;
         break;
       case "top":
-        roomOriginI = roomOriginX;
-        roomOriginJ = roomOriginY;
+        roomOriginI = room.x;
+        roomOriginJ = room.y;
         addRoomSize = 0;
         addScanSize = -1;
         break;
       case "bottom":
-        roomOriginI = roomOriginX;
-        roomOriginJ = roomOriginY;
+        roomOriginI = room.x;
+        roomOriginJ = room.y;
         addRoomSize = 1;
         addScanSize = 1;
         break;
     }
 
     for (let scanSize = 1; continueScan; scanSize++) {
-      for (let i = roomOriginI; i < roomOriginI + roomSize; i++) {
-        let j = roomOriginJ + (roomSize - 1) * addRoomSize + scanSize * addScanSize;
+      for (let i = roomOriginI; i < roomOriginI + room.size; i++) {
+        let j = roomOriginJ + (room.size - 1) * addRoomSize + scanSize * addScanSize;
 
         if (i < 0 || j < 0 || i > map.length - 1 || j > map.length - 1) {
           continueScan = false;
@@ -188,7 +185,6 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
 
     connectables.forEach(function(side, index) {
       if (side.length !== 0) {
-        let curRoomId = room[0];
         let randomNode = side[Math.floor(Math.random() * side.length)];
         let nextRoomId = randomNode[0].roomId;
         let doNotSkip = true;
@@ -196,7 +192,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
         // Randomly skip making a path if the room is already connceted to two unique rooms.  Because of how the code is
         // currently structured, doing this gives priority to rooms that are situated, with respect to the current room,
         // in this order: right, bottom, left, top (not proven):
-        if (room[4].length > 1) {
+        if (room.connectedRooms.length > 1) {
           let num = Math.random();
 
           if (num > corridorAmountBias) {
@@ -205,7 +201,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
         }
 
         // Make sure that the rooms are **not** already connected
-        if (doNotSkip && room[4].indexOf(nextRoomId) == -1) {
+        if (doNotSkip && room.connectedRooms.indexOf(nextRoomId) == -1) {
           let nodeY = randomNode[0].y;
           let nodeX = randomNode[0].x;
           let corY = randomNode[1][0];
@@ -231,8 +227,8 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
           }
 
           // Modify roomList to reflect the connection of these rooms
-          roomList[curRoomId - 1][4].push(nextRoomId);
-          roomList[nextRoomId - 1][4].push(curRoomId);
+          roomList[room.roomId - 1].connectedRooms.push(nextRoomId);
+          roomList[nextRoomId - 1].connectedRooms.push(room.roomId);
         }
       }
     });
@@ -270,12 +266,12 @@ export function placePlayer(map) {
   let tileNotFound = true;
 
   while (tileNotFound) {
-    let playerY = Math.floor(Math.random() * (mapSize + 1));
-    let playerX = Math.floor(Math.random() * (mapSize + 1));
+    let playerY = Math.floor(Math.random() * mapSize);
+    let playerX = Math.floor(Math.random() * mapSize);
     let tile = map[playerY][playerX];
 
-    if (tile[2] === 2) {
-      tile[4] = 1;
+    if (tile.terrain === 2) {
+      tile.player = "true";
       tileNotFound = false;
     }
   }
