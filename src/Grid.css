@@ -1,0 +1,27 @@
+$grid-size: 40px;
+$grid-border: 1px solid black;
+
+$terrain-null: #444;
+$terrain-margin: crimson;
+$terrain-normal: paleGreen;
+
+.Grid {
+  display: inline-block;
+  box-sizing: border-box;
+  height: $grid-size;
+  width: $grid-size;
+  border-right: $grid-border;
+  border-bottom: $grid-border;
+}
+
+[data-terrain="0"] {
+  background-color: $terrain-null;
+}
+
+[data-terrain="1"] {
+  background-color: $terrain-margin;
+}
+
+[data-terrain="2"] {
+  background-color: $terrain-normal;
+}
