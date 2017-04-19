@@ -1,0 +1,17 @@
+.GameController-gameContainer {
+  text-align: center;
+}
+
+.GameController-levelWrapper {
+  display: inline-flex;
+  position: relative;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.GameController-fog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* background: radial-gradient(rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 60%); */
+}

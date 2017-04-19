@@ -9,6 +9,10 @@
   --player-color: royalBlue;
 }
 
+.Map {
+  position: absolute;
+}
+
 .Map-tile {
   display: inline-block;
   box-sizing: border-box;

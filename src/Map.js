@@ -18,7 +18,7 @@ class Map extends React.Component {
     });
 
     return(
-      <div>{renderedMap}</div>
+      <div className="Map" style={this.props.style}>{renderedMap}</div>
     );
   };
 }

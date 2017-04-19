@@ -1,12 +1,12 @@
-export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias) {
+export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias) {
   let roomList = [];
 
   // Function for generating the level as an array according to the sizes specified in GameController
   function createMapArray() {
-    for (let y = 0; y < mapSizeY; y++) {
+    for (let y = 0; y < mapSize; y++) {
       let row = [];
 
-      for (let x = 0; x < mapSizeX; x++) {
+      for (let x = 0; x < mapSize; x++) {
         // [y, x, terrain, roomId, player]
         row.push({
           y: y,
@@ -264,10 +264,12 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
 export function placePlayer(map) {
   let mapSize = map.length;
   let tileNotFound = true;
+  let playerY = 0;
+  let playerX = 0;
 
   while (tileNotFound) {
-    let playerY = Math.floor(Math.random() * mapSize);
-    let playerX = Math.floor(Math.random() * mapSize);
+    playerY = Math.floor(Math.random() * mapSize);
+    playerX = Math.floor(Math.random() * mapSize);
     let tile = map[playerY][playerX];
 
     if (tile.terrain === 2) {
@@ -275,4 +277,6 @@ export function placePlayer(map) {
       tileNotFound = false;
     }
   }
+
+  return {y: playerY, x: playerX}
 }
