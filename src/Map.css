@@ -1,0 +1,39 @@
+:root {
+  --tile-size: 20px;
+  --tile-border: 1px solid white;
+
+  --terrain-null: #444;
+  --terrain-margin: crimson;
+  --terrain-normal: paleGreen;
+}
+
+.Map-tile {
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--tile-size);
+  width: var(--tile-size);
+  border-right: var(--tile-border);
+  border-bottom: var(--tile-border);
+}
+
+.Map-row {
+  height: var(--tile-size);
+  line-height: 0;
+}
+
+/*  Terrain types are as follows:
+    0 = nothing
+    1 = margins used for map generation and visualisation, it's meant to be functionally the same as 0
+    2 = regular
+*/
+[data-terrain="0"] {
+  background-color: var(--terrain-null);
+}
+
+[data-terrain="1"] {
+  background-color: var(--terrain-margin);
+}
+
+[data-terrain="2"] {
+  background-color: var(--terrain-normal);
+}
