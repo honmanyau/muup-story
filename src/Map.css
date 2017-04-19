@@ -1,5 +1,5 @@
 :root {
-  --tile-size: 20px;
+  --tile-size: 40px;
   --tile-border: 1px solid white;
 
   --terrain-null: #444;

@@ -261,22 +261,28 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
 
 
 
-export function placePlayer(map) {
+export function placeObject(map, object) {
   let mapSize = map.length;
   let tileNotFound = true;
-  let playerY = 0;
-  let playerX = 0;
+  let objectY = 0;
+  let objectX = 0;
 
   while (tileNotFound) {
-    playerY = Math.floor(Math.random() * mapSize);
-    playerX = Math.floor(Math.random() * mapSize);
-    let tile = map[playerY][playerX];
+    objectY = Math.floor(Math.random() * mapSize);
+    objectX = Math.floor(Math.random() * mapSize);
+    let tile = map[objectY][objectX];
 
     if (tile.terrain === 2) {
-      tile.player = "true";
-      tileNotFound = false;
+      switch(object) {
+        case "player":
+          tile.player = "true";
+          tileNotFound = false;
+          break;
+        default:
+          break;
+      }
     }
   }
 
-  return {y: playerY, x: playerX}
+  return {y: objectY, x: objectX}
 }

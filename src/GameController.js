@@ -15,14 +15,22 @@ class GameController extends React.Component {
     // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can have more than
     // two unique corridors
     this.corridorAmountBias = 0.3;
-    this.tileSize = 20;
-    this.levelWrapperSize = 40;
+    this.tileSize = 40;
+    this.levelWrapperSize = 16;
 
     this.state = {
       map: [],
       curLevel: 1,
-      playerY: 0,
-      playerX: 0
+      player: {
+        x: 0,
+        y: 0,
+        level: 1,
+        XP: 0,
+        mhp: 50,
+        hp: 50,
+        weapon: "Body slam",
+        attack: 10
+      }
     };
 
     this.generateNewlevel = this.generateNewlevel.bind(this);
@@ -44,54 +52,58 @@ class GameController extends React.Component {
   generateNewlevel() {
     let map = [];
     let playerPosition = {};
+    let player = JSON.parse(JSON.stringify(this.state.player));
 
     logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.marginVariability, this.corridorAmountBias);
-    playerPosition = logic.placePlayer(map);
+    playerPosition = logic.placeObject(map, "player");
+
+    player.y = playerPosition.y;
+    player.x = playerPosition.x;
 
     this.setState({
       map: map,
-      playerY: playerPosition.y,
-      playerX: playerPosition.x
+      player: player
     });
   }
 
   handleUserInput(event) {
     let map = this.state.map.slice(0);
     let key = event.which || event.keyCode;
-    let playerY = this.state.playerY;
-    let playerX = this.state.playerX;
+    let player = JSON.parse(JSON.stringify(this.state.player));
     let playerNextY = 0;
     let playerNextX = 0;
 
     switch(key) {
         // Left key
       case 37:
-        playerNextY = playerY;
-        playerNextX = playerX - 1;
+        playerNextY = player.y;
+        playerNextX = player.x - 1;
         break;
         // Up key
       case 38:
-        playerNextY = playerY - 1;
-        playerNextX = playerX;
+        playerNextY = player.y - 1;
+        playerNextX = player.x;
         break;
       case 39:
-        playerNextY = playerY;
-        playerNextX = playerX + 1;
+        playerNextY = player.y;
+        playerNextX = player.x + 1;
         break;
       case 40:
-        playerNextY = playerY + 1;
-        playerNextX = playerX;
+        playerNextY = player.y + 1;
+        playerNextX = player.x;
         break;
     }
 
     if (map[playerNextY][playerNextX].terrain > 1) {
-      map[playerY][playerX].player = "false";
+      map[player.y][player.x].player = "false";
       map[playerNextY][playerNextX].player = "true";
+
+      player.y = playerNextY;
+      player.x = playerNextX;
 
       this.setState({
         map: map,
-        playerY: playerNextY,
-        playerX: playerNextX
+        player: player
       });
     }
   }
@@ -100,8 +112,8 @@ class GameController extends React.Component {
     let s = this.tileSize;
     let wrapperCenter = this.levelWrapperSize * s / 2;
     let tileOffset = s / 2;
-    let offsetY = wrapperCenter - this.state.playerY * s - tileOffset;
-    let offsetX = wrapperCenter - this.state.playerX * s - tileOffset;
+    let offsetY = wrapperCenter - this.state.player.y * s - tileOffset;
+    let offsetX = wrapperCenter - this.state.player.x * s - tileOffset;
 
     // This ensures that the player is always in focus and at the middle of the levelWrapper
     let mapOffsetStyles = {
