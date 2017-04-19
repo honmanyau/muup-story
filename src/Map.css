@@ -40,6 +40,6 @@
   background-color: var(--terrain-normal);
 }
 
-[data-player="1"] {
+[data-player="true"] {
   background-color: var(--player-color);
 }
