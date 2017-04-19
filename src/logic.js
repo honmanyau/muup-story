@@ -5,12 +5,16 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
   function createMapArray() {
     for (let y = 0; y < mapSizeY; y++) {
       let row = [];
-      let terrain = 0;
-      let roomId = 0;
-      let player = 0;
 
       for (let x = 0; x < mapSizeX; x++) {
-        row.push([y, x, terrain, roomId, player]);
+        // [y, x, terrain, roomId, player]
+        row.push({
+          y: y,
+          x: x,
+          terrain: 0,
+          roomId: 0,
+          player: 0
+        });
       }
       // Once a row is filled, push it into the map array
       map.push(row);
@@ -20,31 +24,31 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
   // Function for creating a room with a randomly-sized margin, the maximum possible size is determined by roomScan()
   function createRoom(size, originY, originX) {
     let margin = Math.floor(Math.random() * marginVariability);
-    //let margin = 1;
-    let roomId = 0;
+    let curRoomId = roomList.length + 1;
 
     size = minRoomSize + Math.floor(Math.random() * (size - minRoomSize + 1));
 
-    // The third item of an array that represents a grid sets the terrain of  grid
+    // Loop through each of the tile that this room with size size and origin (top left corner) y and x to will cover
+    // and change the corresponding tiles in the map array to have a terrain value that corresponds to a either a
+    // regular room tile or a margin tile
     for (let y = originY; y < originY + size; y++) {
       for (let x = originX; x < originX + size; x++) {
         let terrain = 2;
-        roomId = roomList.length + 1;
+        let roomId = curRoomId;
 
         if (y < margin + originY || x < margin + originX || y > originY + size - margin - 1 || x > originX + size - margin - 1) {
           terrain = 1;
           roomId = 0;
         }
 
-        map[y][x][2] = terrain;
-        map[y][x][3] = roomId;
+        map[y][x].terrain = terrain;
+        map[y][x].roomId = roomId;
       }
     };
 
     // Room format [roomId, size of room, y-coordinate of the origin, x-coordinate of the origin, array of connected rooms]
-    roomId = roomList.length + 1;
     roomList.push([
-      roomId, size - margin * 2,
+      curRoomId, size - margin * 2,
       originY + margin,
       originX + margin,
       []
@@ -52,17 +56,17 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
   }
 
   // Find the largest room size that can be made from the coordinates supplied
-  function roomScan(gridY, gridX) {
+  function roomScan(tileY, tileX) {
     let size = 0;
     let availableSizes = [];
 
-    if (gridY < map.length && gridX < map.length && map[gridY][gridX][2] === 0) {
+    if (map[tileY][tileX].terrain === 0) {
       for (let roomSize = minRoomSize; roomSize < maxRoomSize; roomSize++) {
         let roomAvailable = true;
 
-        for (let feelerY = gridY; feelerY < gridY + roomSize; feelerY++) {
-          for (let feelerX = gridX; feelerX < gridX + roomSize; feelerX++) {
-            if (feelerY > map.length - 1 || feelerX > map.length - 1 || map[feelerY][feelerX][2] !== 0) {
+        for (let feelerY = tileY; feelerY < tileY + roomSize; feelerY++) {
+          for (let feelerX = tileX; feelerX < tileX + roomSize; feelerX++) {
+            if (feelerY > map.length - 1 || feelerX > map.length - 1 || map[feelerY][feelerX].terrain !== 0) {
               roomAvailable = false;
               break;
             }
@@ -136,7 +140,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
         }
 
         if (direction == "right" || direction == "left") {
-          if (map[i][j][3] !== 0) {
+          if (map[i][j].roomId !== 0) {
             let corridorSize = scanSize;
 
             if (direction == "right") {
@@ -151,7 +155,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
         }
 
         if (direction == "top" || direction == "bottom") {
-          if (map[j][i][3] !== 0) {
+          if (map[j][i].roomId !== 0) {
             let corridorSize = scanSize;
 
             if (direction == "bottom") {
@@ -186,7 +190,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
       if (side.length !== 0) {
         let curRoomId = room[0];
         let randomNode = side[Math.floor(Math.random() * side.length)];
-        let nextRoomId = randomNode[0][3];
+        let nextRoomId = randomNode[0].roomId;
         let doNotSkip = true;
 
         // Randomly skip making a path if the room is already connceted to two unique rooms.  Because of how the code is
@@ -200,10 +204,10 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
           }
         }
 
-        // Make sure that the rooms are not already connected
+        // Make sure that the rooms are **not** already connected
         if (doNotSkip && room[4].indexOf(nextRoomId) == -1) {
-          let nodeY = randomNode[0][0];
-          let nodeX = randomNode[0][1];
+          let nodeY = randomNode[0].y;
+          let nodeX = randomNode[0].x;
           let corY = randomNode[1][0];
           let corX = randomNode[1][1];
           let corYAbs = Math.abs(corY);
@@ -214,7 +218,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
             let incX = corX / corXAbs;
 
             for (let x = nodeX + incX; x != nodeX + corX; x += incX) {
-              map[nodeY][x][2] = 2;
+              map[nodeY][x].terrain = 2;
             }
           }
 
@@ -222,7 +226,7 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
             let incY = corY / corYAbs;
 
             for (let y = nodeY + incY; y != nodeY + corY; y += incY) {
-              map[y][nodeX][2] = 2;
+              map[y][nodeX].terrain = 2;
             }
           }
 
