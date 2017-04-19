@@ -33,7 +33,7 @@ class GameController extends React.Component {
     let corridorAmountBias = 0.3;
 
     logic.generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias);
-    logic.placePlayer(map);
+    //logic.placePlayer(map);
 
     this.setState({map: map});
   }
