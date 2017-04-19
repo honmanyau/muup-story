@@ -257,4 +257,22 @@ export function generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize,
   });
 
   return map;
-} // generateLevel(map) {
+}; // generateLevel(map) {
+
+
+
+export function placePlayer(map) {
+  let mapSize = map.length;
+  let tileNotFound = true;
+
+  while (tileNotFound) {
+    let playerY = Math.floor(Math.random() * (mapSize + 1));
+    let playerX = Math.floor(Math.random() * (mapSize + 1));
+    let tile = map[playerY][playerX];
+
+    if (tile[2] === 2) {
+      tile[4] = 1;
+      tileNotFound = false;
+    }
+  }
+}
