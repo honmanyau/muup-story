@@ -5,6 +5,8 @@
   --terrain-null: #444;
   --terrain-margin: crimson;
   --terrain-normal: paleGreen;
+
+  --player-color: royalBlue;
 }
 
 .Map-tile {
@@ -36,4 +38,8 @@
 
 [data-terrain="2"] {
   background-color: var(--terrain-normal);
+}
+
+[data-player="1"] {
+  background-color: var(--player-color);
 }

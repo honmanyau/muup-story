@@ -9,15 +9,22 @@ class GameController extends React.Component {
 
     this.state = {
       map: [],
+      curLevel: 1,
       playerY: 0,
-      playerX: 0,
+      playerX: 0
     };
+
+    this.generateNewlevel = this.generateNewlevel.bind(this);
   }
 
   componentDidMount() {
+    this.generateNewlevel();
+  }
+
+  generateNewlevel() {
     let map = [];
-    let mapSizeY = 40;
-    let mapSizeX = 40;
+    let mapSizeY = 30;
+    let mapSizeX = 30;
     let minRoomSize = 7;
     let maxRoomSize = 12;
     // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can have more than
@@ -26,6 +33,7 @@ class GameController extends React.Component {
     let corridorAmountBias = 0.3;
 
     logic.generateLevel(map, mapSizeY, mapSizeX, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias);
+    logic.placePlayer(map);
 
     this.setState({map: map});
   }
