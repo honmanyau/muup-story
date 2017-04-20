@@ -1,12 +1,6 @@
 :root {
   --tile-size: 40px;
   --tile-border: 1px solid white;
-
-  --terrain-null: #444;
-  --terrain-margin: crimson;
-  --terrain-normal: paleGreen;
-
-  --player-color: royalBlue;
 }
 
 .Map {
@@ -27,23 +21,36 @@
   line-height: 0;
 }
 
-/*  Terrain types are as follows:
+/*  Terrains:
     0 = nothing
     1 = margins used for map generation and visualisation, it's meant to be functionally the same as 0
     2 = regular
 */
 [data-terrain="0"] {
-  background-color: var(--terrain-null);
+  background-color: #444;
 }
 
 [data-terrain="1"] {
-  background-color: var(--terrain-margin);
+  background-color: crimson;
 }
 
 [data-terrain="2"] {
-  background-color: var(--terrain-normal);
+  background-color: paleGreen;
 }
 
+/*  Items:
+    100 = Healing Crystal
+    999 = Excalibur
+*/
+[data-objectid="101"] {
+  background-color: pink;
+}
+
+[data-objectid="999"] {
+  background-color: gold;
+}
+
+/* Player styling */
 [data-player="true"] {
-  background-color: var(--player-color);
+  background-color: royalBlue;
 }

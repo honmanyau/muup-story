@@ -1,3 +1,5 @@
+import * as assets from './assets.js'
+
 export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias) {
   let roomList = [];
 
@@ -14,7 +16,9 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
           terrain: 0,
           roomId: 0,
           player: "false",
-          object: {}
+          object: {
+            id: "none"
+          }
         });
       }
       // Once a row is filled, push it into the map array
@@ -262,7 +266,7 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
 
 
 
-export function placeObject(map, object) {
+export function placeObject(map, object, objectId) {
   let mapSize = map.length;
   let tileNotFound = true;
   let objectY = 0;
@@ -273,14 +277,14 @@ export function placeObject(map, object) {
     objectX = Math.floor(Math.random() * mapSize);
     let tile = map[objectY][objectX];
 
-    if (tile.terrain === 2) {
-      switch(object) {
-        case "player":
-          tile.player = "true";
-          tileNotFound = false;
-          break;
-        default:
-          break;
+    if (tile.terrain === 2 && tile.object.id === "none") {
+      if (object === "player") {
+        tile.player = "true";
+        tileNotFound = false;
+      }
+      else if (object === "item" && tile.object.id === "none") {
+        tile.object = assets.items[objectId]
+        tileNotFound = false;
       }
     }
   }

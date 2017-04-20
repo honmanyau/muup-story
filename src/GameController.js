@@ -9,7 +9,7 @@ class GameController extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mapSize = 40;
+    this.mapSize = 20;
     this.minRoomSize = 7;
     this.maxRoomSize = 12;
     this.marginVariability = 3;
@@ -28,8 +28,9 @@ class GameController extends React.Component {
         level: 1,
         XP: 0,
         mhp: 50,
-        hp: 50,
+        hp: 20,
         weapon: "Body slam",
+        weaponId: "none",
         attack: 10
       }
     };
@@ -56,10 +57,16 @@ class GameController extends React.Component {
     let player = JSON.parse(JSON.stringify(this.state.player));
 
     logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.marginVariability, this.corridorAmountBias);
+    // Create the player character and write the coordinates to the player object for state-setting
     playerPosition = logic.placeObject(map, "player");
-
     player.y = playerPosition.y;
     player.x = playerPosition.x;
+    // Create healing objcets
+    logic.placeObject(map, "item", "i101");
+    logic.placeObject(map, "item", "i101");
+    logic.placeObject(map, "item", "i999");
+    logic.placeObject(map, "item", "i999");
+
 
     this.setState({
       map: map,
@@ -75,32 +82,79 @@ class GameController extends React.Component {
     let playerNextX = 0;
 
     switch(key) {
-        // Left key
+      // Left key
       case 37:
         playerNextY = player.y;
         playerNextX = player.x - 1;
         break;
-        // Up key
+      // Up key
       case 38:
         playerNextY = player.y - 1;
         playerNextX = player.x;
         break;
+      // Right key
       case 39:
         playerNextY = player.y;
         playerNextX = player.x + 1;
         break;
+      // Down Key
       case 40:
         playerNextY = player.y + 1;
         playerNextX = player.x;
         break;
     }
 
-    if (map[playerNextY][playerNextX].terrain > 1 && map[playerNextY][playerNextX].terrain < 20) {
-      map[player.y][player.x].player = "false";
-      map[playerNextY][playerNextX].player = "true";
+    let curTile = map[player.y][player.x];
+    let nextTile = map[playerNextY][playerNextX];
 
-      player.y = playerNextY;
-      player.x = playerNextX;
+    if (map[playerNextY][playerNextX].terrain > 1) {
+      let itemName = nextTile.object.name;
+      let itemAffectedStat = nextTile.object.affected;
+      let itemEffect = nextTile.object.effect;
+      let itemType = nextTile.object.type;
+
+      let movePlayer = false;
+      let clearObject = false;
+
+      // If it is an empty, traversable tile
+      if (nextTile.object.id === "none") {
+        movePlayer = true;
+      }
+      // Else if it contains a consumable item
+      else if (nextTile.object.id < 1000) {
+        // If the affected stat is HP
+        if (itemAffectedStat === "hp") {
+          let maxHP = player.mhp;
+
+          player[itemAffectedStat] = player[itemAffectedStat] + itemEffect;
+
+          // Maintain HP below Max HP
+          if (player[itemAffectedStat] > maxHP) {
+            player[itemAffectedStat] = maxHP;
+          }
+        }
+        // If the item is a weapon
+        else if (itemType === "Weapon"){
+          player.weapon = itemName;
+          player[itemAffectedStat] = itemEffect;
+        }
+
+        clearObject = true;
+        movePlayer = true;
+      }
+
+      // Move the player and record the new position
+      if (movePlayer) {
+        curTile.player = "false";
+        nextTile.player = "true";
+        player.y = playerNextY;
+        player.x = playerNextX;
+      }
+
+      // Clear the tile of the pervious object
+      if (clearObject) {
+        nextTile.object = {id: "none"};
+      }
 
       this.setState({
         map: map,

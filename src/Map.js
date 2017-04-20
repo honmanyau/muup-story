@@ -9,8 +9,8 @@ class Map extends React.Component {
       return (
         <div className={"Map-row"} data-row={index}>
           {
-            row.map((tile, index) => {
-              return <Tile y={tile.y} x={tile.x} terrain={tile.terrain} roomId={tile.roomId} player={tile.player}/>
+            row.map((tile) => {
+              return <Tile y={tile.y} x={tile.x} terrain={tile.terrain} roomId={tile.roomId} player={tile.player} objectId={tile.object.id} />
             })
           }
         </div>
