@@ -17,7 +17,7 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
           roomId: 0,
           player: "false",
           object: {
-            id: "none"
+            id: ""
           }
         });
       }
@@ -277,12 +277,12 @@ export function placeObject(map, object, objectId) {
     objectX = Math.floor(Math.random() * mapSize);
     let tile = map[objectY][objectX];
 
-    if (tile.terrain === 2 && tile.object.id === "none") {
+    if (tile.terrain === 2 && tile.object.id === "") {
       if (object === "player") {
         tile.player = "true";
         tileNotFound = false;
       }
-      else if (object === "item" && tile.object.id === "none") {
+      else if (object === "item" && tile.object.id === "") {
         tile.object = assets.items[objectId]
         tileNotFound = false;
       }
@@ -290,4 +290,100 @@ export function placeObject(map, object, objectId) {
   }
 
   return {y: objectY, x: objectX}
+}
+
+
+
+export function handleUserInput(map, player, key) {
+  let playerNextY = 0;
+  let playerNextX = 0;
+
+  switch(key) {
+    // Left key
+    case 37:
+      playerNextY = player.y;
+      playerNextX = player.x - 1;
+      break;
+    // Up key
+    case 38:
+      playerNextY = player.y - 1;
+      playerNextX = player.x;
+      break;
+    // Right key
+    case 39:
+      playerNextY = player.y;
+      playerNextX = player.x + 1;
+      break;
+    // Down Key
+    case 40:
+      playerNextY = player.y + 1;
+      playerNextX = player.x;
+      break;
+  }
+
+  let curTile = map[player.y][player.x];
+  let nextTile = map[playerNextY][playerNextX];
+
+  if (map[playerNextY][playerNextX].terrain > 1) {
+    let itemName = nextTile.object.name;
+    let itemAffectedStat = nextTile.object.affected;
+    let itemEffect = nextTile.object.effect;
+    let itemType = nextTile.object.type;
+
+    let movePlayer = false;
+    let clearObject = false;
+    let replaceObject = "";
+
+    // If it is an empty, traversable tile
+    if (nextTile.object.id === "") {
+      movePlayer = true;
+    }
+    // Else if it contains a consumable item
+    else if (nextTile.object.id < 1000) {
+      // If the affected stat is HP
+      if (itemAffectedStat === "hp") {
+        let maxHP = player.mhp;
+
+        player[itemAffectedStat] = player[itemAffectedStat] + itemEffect;
+
+        // Maintain HP below Max HP
+        if (player[itemAffectedStat] > maxHP) {
+          player[itemAffectedStat] = maxHP;
+        }
+      }
+      // If the item is a weapon
+      else if (itemType === "Weapon"){
+        let weaponId = "i" + nextTile.object.id;
+
+        if (player.weaponId !== "") {
+          replaceObject  = player.weaponId;
+        }
+
+        player.weapon = itemName;
+        player.weaponId = weaponId;
+        player[itemAffectedStat] = itemEffect;
+      }
+
+      clearObject = true;
+      movePlayer = true;
+    }
+
+    // Move the player and record the new position
+    if (movePlayer) {
+      curTile.player = "false";
+      nextTile.player = "true";
+      player.y = playerNextY;
+      player.x = playerNextX;
+    }
+
+    // Clear the tile of the pervious object
+    if (clearObject) {
+      nextTile.object = {id: ""};
+    }
+
+    // Drop the previous weapon if the player is already holding one
+    if (replaceObject !== "") {
+      nextTile.object = assets.items[replaceObject];
+    }
+  }
 }

@@ -4,6 +4,7 @@ import Tile from './Tile.js'
 import Map from './Map.js'
 import InfoPanel from './InfoPanel.js'
 import * as logic from './logic.js'
+import * as assets from './assets.js'
 
 class GameController extends React.Component {
   constructor(props) {
@@ -28,9 +29,9 @@ class GameController extends React.Component {
         level: 1,
         XP: 0,
         mhp: 50,
-        hp: 20,
+        hp: 50,
         weapon: "Body slam",
-        weaponId: "none",
+        weaponId: "",
         attack: 10
       }
     };
@@ -78,106 +79,28 @@ class GameController extends React.Component {
     let map = this.state.map.slice(0);
     let key = event.which || event.keyCode;
     let player = JSON.parse(JSON.stringify(this.state.player));
-    let playerNextY = 0;
-    let playerNextX = 0;
 
-    switch(key) {
-      // Left key
-      case 37:
-        playerNextY = player.y;
-        playerNextX = player.x - 1;
-        break;
-      // Up key
-      case 38:
-        playerNextY = player.y - 1;
-        playerNextX = player.x;
-        break;
-      // Right key
-      case 39:
-        playerNextY = player.y;
-        playerNextX = player.x + 1;
-        break;
-      // Down Key
-      case 40:
-        playerNextY = player.y + 1;
-        playerNextX = player.x;
-        break;
-    }
+    logic.handleUserInput(map, player, key);
 
-    let curTile = map[player.y][player.x];
-    let nextTile = map[playerNextY][playerNextX];
-
-    if (map[playerNextY][playerNextX].terrain > 1) {
-      let itemName = nextTile.object.name;
-      let itemAffectedStat = nextTile.object.affected;
-      let itemEffect = nextTile.object.effect;
-      let itemType = nextTile.object.type;
-
-      let movePlayer = false;
-      let clearObject = false;
-
-      // If it is an empty, traversable tile
-      if (nextTile.object.id === "none") {
-        movePlayer = true;
-      }
-      // Else if it contains a consumable item
-      else if (nextTile.object.id < 1000) {
-        // If the affected stat is HP
-        if (itemAffectedStat === "hp") {
-          let maxHP = player.mhp;
-
-          player[itemAffectedStat] = player[itemAffectedStat] + itemEffect;
-
-          // Maintain HP below Max HP
-          if (player[itemAffectedStat] > maxHP) {
-            player[itemAffectedStat] = maxHP;
-          }
-        }
-        // If the item is a weapon
-        else if (itemType === "Weapon"){
-          player.weapon = itemName;
-          player[itemAffectedStat] = itemEffect;
-        }
-
-        clearObject = true;
-        movePlayer = true;
-      }
-
-      // Move the player and record the new position
-      if (movePlayer) {
-        curTile.player = "false";
-        nextTile.player = "true";
-        player.y = playerNextY;
-        player.x = playerNextX;
-      }
-
-      // Clear the tile of the pervious object
-      if (clearObject) {
-        nextTile.object = {id: "none"};
-      }
-
-      this.setState({
-        map: map,
-        player: player
-      });
-    }
+    this.setState({
+      map: map,
+      player: player
+    });
   }
 
   render() {
     let player = JSON.parse(JSON.stringify(this.state.player));
     let tileSize = this.tileSize;
-
-    // These ensure that the player is always in focus and at the middle of the levelWrapper
     let wrapperCenter = this.levelWrapperSize * tileSize / 2;
     let tileOffset = tileSize / 2;
+    // These ensure that the player is always in focus and at the middle of the levelWrapper
     let mapOffsetStyles = {
       height: this.mapSize * tileSize,
       width: this.mapSize * tileSize,
       top: wrapperCenter - player.y * tileSize - tileOffset,
       left: wrapperCenter - player.x * tileSize - tileOffset
     }
-
-    // This allows the size of the playing field to be modified
+    // This allows the size of the playing field to be modified by changing this.mapSize and this.tileSize
     let levelWrapperStyles = {
       height: this.levelWrapperSize * tileSize,
       width: this.levelWrapperSize * tileSize
