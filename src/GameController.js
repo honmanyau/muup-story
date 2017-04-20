@@ -10,20 +10,12 @@ class GameController extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mapSize = 20;
-    this.minRoomSize = 7;
-    this.maxRoomSize = 12;
-    this.marginVariability = 3;
-    // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can have more than
-    // two unique corridors
-    this.corridorAmountBias = 0.3;
-    this.tileSize = 40;
-    this.levelWrapperSize = 14;
-
     this.state = {
       map: [],
       curLevel: 1,
       player: {
+        id: "player",
+        name: "",
         x: 0,
         y: 0,
         level: 1,
@@ -49,25 +41,49 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    this.generateNewlevel();
+    this.generateNewlevel(0);
   }
 
-  generateNewlevel() {
+  generateNewlevel(level) {
     let map = [];
     let playerPosition = {};
     let player = JSON.parse(JSON.stringify(this.state.player));
 
-    logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.marginVariability, this.corridorAmountBias);
-    // Create the player character and write the coordinates to the player object for state-setting
-    playerPosition = logic.placeObject(map, "player");
-    player.y = playerPosition.y;
-    player.x = playerPosition.x;
-    // Create healing objcets
-    logic.placeObject(map, "item", "i101");
-    logic.placeObject(map, "item", "i101");
-    logic.placeObject(map, "item", "i999");
-    logic.placeObject(map, "item", "i999");
+    this.tileSize = 40;
+    this.levelWrapperSize = 14;
+    this.mapSize = 20;
+    this.minRoomSize = 7;
+    this.maxRoomSize = 12;
+    this.staticMargin = 0;
+    this.marginVariability = 3;
+    // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can
+    // have more than two unique corridors
+    this.corridorAmountBias = 0.3;
 
+    if (level === 0) {
+      // Can be tidied up here
+      this.mapSize = 15;
+      this.minRoomSize = 15;
+      this.maxRoomSize = 16;
+      this.staticMargin = 1;
+      this.marginVariability = 0;
+      this.corridorAmountBias = 0;
+
+      logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
+      // Create the player character and write the coordinates to the player object for state-setting
+      playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
+      logic.placeObject(map, "item", "i101", 1, [1, 1]);
+      logic.placeObject(map, "item", "i999", 1, [13, 1]);
+      //logic.placeObject(map, "item", "e1001", 1, [7, 9]);
+    }
+    else {
+      logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
+      // Create the player character and write the coordinates to the player object for state-setting
+      playerPosition = logic.placeObject(map, player, player.id);
+      // Create healing objcets
+      logic.placeObject(map, "item", "i101", 10);
+      logic.placeObject(map, "item", "i999");
+    }
 
     this.setState({
       map: map,

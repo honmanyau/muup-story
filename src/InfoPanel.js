@@ -7,7 +7,7 @@ class InfoPanel extends React.Component {
 
     return(
       <div className="InfoPanel">
-        <p>InfoPanel (to be styled once development is to be finalised)</p>
+        <h3>InfoPanel (to be styled once development is to be finalised)</h3>
         <p><strong>Player Info</strong> x: {player.x} y: {player.y} Level: {player.level} XP: {player.xp} HP: {player.hp}/{player.mhp} Weapon: {player.weapon} Attack: {player.attack}</p>
       </div>
     );

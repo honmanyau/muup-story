@@ -1,6 +1,6 @@
 import * as assets from './assets.js'
 
-export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVariability, corridorAmountBias) {
+export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
 
   // Function for generating the level as an array according to the sizes specified in GameController
@@ -28,7 +28,7 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
 
   // Function for creating a room with a randomly-sized margin, the maximum possible size is determined by roomScan()
   function createRoom(size, originY, originX) {
-    let margin = Math.floor(Math.random() * marginVariability);
+    let margin = staticMargin + Math.floor(Math.random() * marginVariability);
     let curRoomId = roomList.length + 1;
 
     size = minRoomSize + Math.floor(Math.random() * (size - minRoomSize + 1));
@@ -250,6 +250,8 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
       let availableSizes = [];
       let roomSize = roomScan(mapY, mapX);
 
+      console.log(roomSize)
+
       if (roomSize !== 0) {
         createRoom(roomSize, mapY, mapX)
       }
@@ -266,30 +268,40 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
 
 
 
-export function placeObject(map, object, objectId) {
+export function placeObject(map, object, objectId, count = 1, coor = []) {
   let mapSize = map.length;
-  let tileNotFound = true;
-  let objectY = 0;
-  let objectX = 0;
 
-  while (tileNotFound) {
-    objectY = Math.floor(Math.random() * mapSize);
-    objectX = Math.floor(Math.random() * mapSize);
-    let tile = map[objectY][objectX];
+  for (let i = 0; i < count; i++) {
+    let tileNotFound = true;
 
-    if (tile.terrain === 2 && tile.object.id === "") {
-      if (object === "player") {
-        tile.player = "true";
-        tileNotFound = false;
+    while (tileNotFound) {
+      let objectY = Math.floor(Math.random() * mapSize);
+      let objectX = Math.floor(Math.random() * mapSize);
+
+      if (coor.length !== 0) {
+        objectY = coor[0];
+        objectX = coor[1];
       }
-      else if (object === "item" && tile.object.id === "") {
-        tile.object = assets.items[objectId]
-        tileNotFound = false;
+
+      let tile = map[objectY][objectX];
+
+      if (tile.terrain === 2 && tile.object.id === "") {
+        if (typeof object === "object" && object.id === "player") {
+          tile.player = "true";
+          object.x = objectX;
+          object.y = objectY;
+          tileNotFound = false;
+          // In case of the extremely rare chance that a player ever gets generated more than once
+          // due to programmatic errors
+          i = count;
+        }
+        else if (object === "item" && tile.player === "false" && tile.object.id === "") {
+          tile.object = assets.items[objectId]
+          tileNotFound = false;
+        }
       }
     }
   }
-
-  return {y: objectY, x: objectX}
 }
 
 
@@ -361,7 +373,7 @@ export function handleUserInput(map, player, key) {
 
         player.weapon = itemName;
         player.weaponId = weaponId;
-        player[itemAffectedStat] = itemEffect;
+        player[itemAffectedStat] = player.level + itemEffect;
       }
 
       clearObject = true;
