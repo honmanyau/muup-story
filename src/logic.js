@@ -329,21 +329,25 @@ export function handleUserInput(map, player, key) {
   switch(key) {
     // Left key
     case 37:
+    case 65:
       playerNextY = player.y;
       playerNextX = player.x - 1;
       break;
-    // Up key
+    // Up key or W key
     case 38:
+    case 87:
       playerNextY = player.y - 1;
       playerNextX = player.x;
       break;
     // Right key
     case 39:
+    case 68:
       playerNextY = player.y;
       playerNextX = player.x + 1;
       break;
     // Down Key
     case 40:
+    case 83:
       playerNextY = player.y + 1;
       playerNextX = player.x;
       break;
@@ -408,7 +412,6 @@ export function handleUserInput(map, player, key) {
 
       if (enemy.hp < 0) {
         clearObject = true;
-        movePlayer = true;
       }
     }
 
