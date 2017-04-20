@@ -22,8 +22,6 @@ export const enemies = {
     id: 1001,
     name: '',
     type: 'Enemy',
-    x: 0,
-    y: 0,
     level: 1,
     mhp: 25,
     hp: 25,

@@ -405,7 +405,6 @@ export function handleUserInput(map, player, key) {
         clearObject = true;
         movePlayer = true;
       }
-
     }
 
     // Move the player and record the new position
