@@ -304,6 +304,11 @@ export function placeObject(map, object, objectId, count = 1, coor = []) {
               break;
             case "enemy":
               tile.object = assets.enemies[objectId];
+              break;
+            // This is technically "cheating" because it's not exactly adding an object to the tile
+            case "exit":
+              tile.terrain = 99;
+              break;
             default:
               break;
           }
@@ -348,7 +353,7 @@ export function handleUserInput(map, player, key) {
   let nextTile = map[playerNextY][playerNextX];
 
   // If the tile is potentially traversable
-  if (map[playerNextY][playerNextX].terrain === 2) {
+  if (nextTile.terrain === 2) {
     let objectId = nextTile.object.id;
     let objectType = nextTile.object.type;
     let objectName = nextTile.object.name;
@@ -424,5 +429,8 @@ export function handleUserInput(map, player, key) {
     if (replaceObject !== "") {
       nextTile.object = assets.items[replaceObject];
     }
+  }
+  else if (nextTile.terrain === 99) {
+    return true;
   }
 }

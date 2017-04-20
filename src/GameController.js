@@ -12,7 +12,7 @@ class GameController extends React.Component {
 
     this.state = {
       map: [],
-      curLevel: 1,
+      stage: 0,
       player: {
         id: "player",
         name: "",
@@ -41,7 +41,7 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    this.generateNewlevel(0);
+    this.generateNewlevel(this.state.stage);
   }
 
   generateNewlevel(level) {
@@ -75,6 +75,7 @@ class GameController extends React.Component {
       logic.placeObject(map, "item", "i101", 1, [1, 1]);
       logic.placeObject(map, "item", "i999", 1, [13, 1]);
       logic.placeObject(map, "enemy", "e1001", 1, [7, 9]);
+      logic.placeObject(map, "exit", "", 1, [1, 13])
     }
     else {
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
@@ -83,6 +84,7 @@ class GameController extends React.Component {
       // Create healing objcets
       logic.placeObject(map, "item", "i101", 10);
       logic.placeObject(map, "item", "i999");
+      logic.placeObject(map, "exit");
     }
 
     this.setState({
@@ -95,13 +97,25 @@ class GameController extends React.Component {
     let map = this.state.map.slice(0);
     let key = event.which || event.keyCode;
     let player = JSON.parse(JSON.stringify(this.state.player));
+    let changeLevel = false;
 
-    logic.handleUserInput(map, player, key);
+    changeLevel = logic.handleUserInput(map, player, key);
 
-    this.setState({
-      map: map,
-      player: player
-    });
+    if (changeLevel) {
+      let nextStage = this.state.stage + 1;
+
+      this.setState({
+        stage: nextStage,
+      });
+
+      this.generateNewlevel(nextStage);
+    }
+    else {
+      this.setState({
+        map: map,
+        player: player
+      });
+    }
   }
 
   render() {
@@ -124,7 +138,7 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
-        <InfoPanel player={player} />
+        <InfoPanel player={player} stage={this.state.stage} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
