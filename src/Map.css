@@ -38,7 +38,7 @@
   background-color: paleGreen;
 }
 
-/*  Items:
+/*  Items and NPCs:
     100 = Healing Crystal
     999 = Excalibur
 */
@@ -48,6 +48,10 @@
 
 [data-objectid="999"] {
   background-color: gold;
+}
+
+[data-objectid="1001"] {
+  background-color: black;
 }
 
 /* Player styling */

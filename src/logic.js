@@ -1,4 +1,5 @@
 import * as assets from './assets.js'
+// All parameters used in the functions here are always passed from GameController.js
 
 export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
@@ -284,9 +285,10 @@ export function placeObject(map, object, objectId, count = 1, coor = []) {
       }
 
       let tile = map[objectY][objectX];
+      let allClear = tile.player === "false" && tile.object.id === "";
 
       if (tile.terrain === 2 && tile.object.id === "") {
-        if (typeof object === "object" && object.id === "player") {
+        if (typeof object === "object" && allClear) {
           tile.player = "true";
           object.x = objectX;
           object.y = objectY;
@@ -295,8 +297,17 @@ export function placeObject(map, object, objectId, count = 1, coor = []) {
           // due to programmatic errors
           i = count;
         }
-        else if (object === "item" && tile.player === "false" && tile.object.id === "") {
-          tile.object = assets.items[objectId]
+        else if (typeof object === "string" && allClear) {
+          switch(object) {
+            case "item":
+              tile.object = assets.items[objectId];
+              break;
+            case "enemy":
+              tile.object = assets.enemies[objectId];
+            default:
+              break;
+          }
+
           tileNotFound = false;
         }
       }
@@ -336,22 +347,25 @@ export function handleUserInput(map, player, key) {
   let curTile = map[player.y][player.x];
   let nextTile = map[playerNextY][playerNextX];
 
-  if (map[playerNextY][playerNextX].terrain > 1) {
-    let itemName = nextTile.object.name;
-    let itemAffectedStat = nextTile.object.affected;
-    let itemEffect = nextTile.object.effect;
-    let itemType = nextTile.object.type;
+  // If the tile is potentially traversable
+  if (map[playerNextY][playerNextX].terrain === 2) {
+    let objectId = nextTile.object.id;
+    let objectType = nextTile.object.type;
+    let objectName = nextTile.object.name;
 
     let movePlayer = false;
     let clearObject = false;
     let replaceObject = "";
 
     // If it is an empty, traversable tile
-    if (nextTile.object.id === "") {
+    if (objectId === "") {
       movePlayer = true;
     }
     // Else if it contains a consumable item
-    else if (nextTile.object.id < 1000) {
+    else if (objectId < 1000) {
+      let itemAffectedStat = nextTile.object.affected;
+      let itemEffect = nextTile.object.effect;
+
       // If the affected stat is HP
       if (itemAffectedStat === "hp") {
         let maxHP = player.mhp;
@@ -364,20 +378,34 @@ export function handleUserInput(map, player, key) {
         }
       }
       // If the item is a weapon
-      else if (itemType === "Weapon"){
-        let weaponId = "i" + nextTile.object.id;
+      else if (objectType === "Weapon"){
+        let weaponId = "i" + objectId;
 
         if (player.weaponId !== "") {
           replaceObject  = player.weaponId;
         }
 
-        player.weapon = itemName;
+        player.weapon = objectName;
         player.weaponId = weaponId;
         player[itemAffectedStat] = player.level + itemEffect;
       }
 
       clearObject = true;
       movePlayer = true;
+    }
+    // If the object is an enemy
+    else if (objectId > 1000 && objectId < 2000) {
+      let enemy = nextTile.object;
+      // Decrease player HP
+      player.hp = player.hp - enemy.attack;
+      // Decrease enemy HP
+      enemy.hp = enemy.hp - player.attack;
+
+      if (enemy.hp < 0) {
+        clearObject = true;
+        movePlayer = true;
+      }
+
     }
 
     // Move the player and record the new position

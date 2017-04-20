@@ -74,7 +74,7 @@ class GameController extends React.Component {
       playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
       logic.placeObject(map, "item", "i101", 1, [1, 1]);
       logic.placeObject(map, "item", "i999", 1, [13, 1]);
-      //logic.placeObject(map, "item", "e1001", 1, [7, 9]);
+      logic.placeObject(map, "enemy", "e1001", 1, [7, 9]);
     }
     else {
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
