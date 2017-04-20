@@ -13,7 +13,8 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, marginVari
           x: x,
           terrain: 0,
           roomId: 0,
-          player: "false"
+          player: "false",
+          object: {}
         });
       }
       // Once a row is filled, push it into the map array

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './GameController.css'
 import Tile from './Tile.js'
 import Map from './Map.js'
+import InfoPanel from './InfoPanel.js'
 import * as logic from './logic.js'
 
 class GameController extends React.Component {
@@ -16,7 +17,7 @@ class GameController extends React.Component {
     // two unique corridors
     this.corridorAmountBias = 0.3;
     this.tileSize = 40;
-    this.levelWrapperSize = 16;
+    this.levelWrapperSize = 14;
 
     this.state = {
       map: [],
@@ -94,7 +95,7 @@ class GameController extends React.Component {
         break;
     }
 
-    if (map[playerNextY][playerNextX].terrain > 1) {
+    if (map[playerNextY][playerNextX].terrain > 1 && map[playerNextY][playerNextX].terrain < 20) {
       map[player.y][player.x].player = "false";
       map[playerNextY][playerNextX].player = "true";
 
@@ -109,27 +110,28 @@ class GameController extends React.Component {
   }
 
   render() {
-    let s = this.tileSize;
-    let wrapperCenter = this.levelWrapperSize * s / 2;
-    let tileOffset = s / 2;
-    let offsetY = wrapperCenter - this.state.player.y * s - tileOffset;
-    let offsetX = wrapperCenter - this.state.player.x * s - tileOffset;
+    let player = JSON.parse(JSON.stringify(this.state.player));
+    let tileSize = this.tileSize;
 
-    // This ensures that the player is always in focus and at the middle of the levelWrapper
+    // These ensure that the player is always in focus and at the middle of the levelWrapper
+    let wrapperCenter = this.levelWrapperSize * tileSize / 2;
+    let tileOffset = tileSize / 2;
     let mapOffsetStyles = {
-      height: this.mapSize * s,
-      width: this.mapSize * s,
-      top: offsetY,
-      left: offsetX
+      height: this.mapSize * tileSize,
+      width: this.mapSize * tileSize,
+      top: wrapperCenter - player.y * tileSize - tileOffset,
+      left: wrapperCenter - player.x * tileSize - tileOffset
     }
 
+    // This allows the size of the playing field to be modified
     let levelWrapperStyles = {
-      height: this.levelWrapperSize * s,
-      width: this.levelWrapperSize * s
+      height: this.levelWrapperSize * tileSize,
+      width: this.levelWrapperSize * tileSize
     }
 
     return (
       <div className="GameController-gameContainer">
+        <InfoPanel player={player} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
