@@ -6,7 +6,7 @@ export const items = {
     "type": "Healing",
     "affected": "hp",
     "effect": +20,
-    "dialogueid": null
+    "dialogueId": null
   },
   "999": {
     "id": 999,
@@ -14,7 +14,7 @@ export const items = {
     "type": "Weapon",
     "affected": "attack",
     "effect": 99,
-    "dialogueid": null
+    "dialogueId": null
   }
 }
 
@@ -29,7 +29,7 @@ export const enemies = {
     "hp": null,
     "attack": null,
     "loot": [],
-    "dialogueid": null
+    "dialogueId": null
   }
 }
 
@@ -42,50 +42,68 @@ export const dialogues = {
     "content": {
       "0": {
         "character": "Alice",
-        "characterid": 9001,
+        "characterId": 9001,
         "text": "Oh, hello there, little Muup! What brings you here today?",
         "triggers": []
       },
       "1": {
         "character": "Muup",
-        "characterid": "player",
+        "characterId": "player",
         "text": "I was just browsing on the Int... I mean, I was just strolling in the forst.",
         "triggers": []
       },
       "2": {
         "character": "Alice",
-        "characterid": 9001,
-        "text": "I see! In any case, you came at the right time! It looks like we have a bit of trouble in the forst.",
+        "characterId": 9001,
+        "text": "I see! In any case, you came at the right time! It looks like we have a bit of trouble in the forest.",
         "triggers": []
 
       },
       "3": {
         "character": "Muup",
-        "characterid": "player",
+        "characterId": "player",
         "text": "Oh... what happened? (Maybe I shouldn't have clicked on the Tutorial button).",
         "triggers": []
 
       },
       "4": {
         "character": "Alice",
-        "characterid": 9001,
+        "characterId": 9001,
         "text": "Strange crystals with dark energy started appearing and they are corrupting the forest... oh, no!",
         "triggers": []
       },
       "5": {
-        "character": "",
-        "characterid": "voiceover",
-        "text": "--A strange, dark crystal appeared next to Alice.--",
+        "character": null,
+        "characterId": "voiceover",
+        "text": "--A strange, dark crystal appeared next to Alice--",
         "triggers": [
           {
             "type": "placeObject",
             "coordinates": [5, 9],
-            "objecttype": "enemy",
+            "objectType": "enemy",
             "objectid": "1001",
-            "objectamount": 1,
-            "dialogueid": null
+            "objectAmount": 1,
+            "dialogueId": null
           }
         ]
+      },
+      "6": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Ach! Please help me get rid of it, little Muup!",
+        "triggers": []
+      },
+      "7": {
+        "character": "Muup",
+        "characterId": "player",
+        "text": "Umm... why must I be *little* Muup?",
+        "triggers": []
+      },
+      "8": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "That doesn't matter! Just get rid of it first, please!",
+        "triggers": []
       }
     }
   }
@@ -102,6 +120,6 @@ export const npcs = {
     "hp": 9999,
     "attack": 9999,
     "loot": "Caliburn",
-    "dialogueid": null,
+    "dialogueId": null,
   }
 }

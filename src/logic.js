@@ -413,7 +413,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
 function handleTrigger(map, trigger) {
   switch(trigger.type) {
     case "placeObject":
-      placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates);
+      placeObject(map, trigger.objectType, trigger.objectid, trigger.objectAmount, trigger.coordinates);
       break;
     case "addDialogue":
       addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
@@ -440,6 +440,54 @@ function updatePlayerStats(player) {
   }
 }
 
+function handleDialogue(map, flags, dialogue, object) {
+  let dialogueSet = null;
+
+  if (object !== undefined) {
+    dialogue.object = object;
+  }
+  else if (object === undefined) {
+    object = dialogue.object;
+  }
+
+  dialogueSet = assets.dialogues[object.dialogueId].content;
+  let dialogueSetLength = Object.keys(dialogueSet).length;
+  let curDialogueId = null;
+
+  if (dialogue.progress === null) {
+    curDialogueId = 0;
+  }
+  else {
+    curDialogueId = dialogue.progress + 1;
+  }
+
+  if (curDialogueId < dialogueSetLength) {
+    let curDialogue = dialogueSet[curDialogueId];
+    let triggers = curDialogue.triggers;
+
+    dialogue.progress = curDialogueId;
+    dialogue.character = curDialogue.character;
+    dialogue.text = curDialogue.text;
+
+    if (triggers.length !== 0) {
+      triggers.forEach((trigger) => {
+        handleTrigger(map, trigger);
+      })
+    }
+
+    flags.inDialogue = true;
+  }
+  else if (curDialogueId === dialogueSetLength) {
+    object.dialogueId = null;
+
+    dialogue.object = null;
+    dialogue.progress = null;
+    dialogue.character = null;
+    dialogue.text = null;
+
+    flags.inDialogue = false;
+  }
+}
 
 export function handleUserInput(key, map, player, flags, dialogue) {
   let playerNextY = 0;
@@ -476,7 +524,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
   let nextTile = map[playerNextY][playerNextX];
 
   // If the tile is potentially traversable
-  if (nextTile.terrain === 2) {
+  if (nextTile.terrain === 2 && flags.inDialogue === false) {
     let objectId = nextTile.object.id;
     let objectType = nextTile.object.type;
     let objectName = nextTile.object.name;
@@ -546,42 +594,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     else if (objectId > 9000 && objectId < 10000) {
       let npc = nextTile.object;
 
-      if (npc.dialogueId !== undefined) {
-        let dialogueSet = assets.dialogues[npc.dialogueId].content;
-        let setLength = Object.keys(dialogueSet).length;
-        let curDialogueId = null;
-
-        if (dialogue.progress === null) {
-          curDialogueId = 0;
-        }
-        else {
-          curDialogueId = dialogue.progress + 1;
-        }
-
-        if (curDialogueId < setLength) {
-          let curDialogue = dialogueSet[curDialogueId];
-          let triggers = curDialogue.triggers;
-
-          dialogue.progress = curDialogueId;
-          dialogue.character = curDialogue.character;
-          dialogue.text = curDialogue.text;
-
-          if (triggers.length !== 0) {
-            triggers.forEach((trigger) => {
-              handleTrigger(map, trigger);
-            })
-          }
-
-          flags.inDialogue = true;
-        }
-        else {
-          dialogue.progress = null;
-          dialogue.character = null;
-          dialogue.text = null;
-
-          flags.inDialogue = false;
-        }
-      }
+      handleDialogue(map, flags, dialogue, npc);
     }
 
     // Move the player and record the new position
@@ -601,6 +614,9 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     if (replaceObject !== null) {
       nextTile.object = assets.items[replaceObject];
     }
+  }
+  else if (flags.inDialogue) {
+    handleDialogue(map, flags, dialogue);
   }
   else if (nextTile.terrain === 99) {
     flags.changeLevel = true;

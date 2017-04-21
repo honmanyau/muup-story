@@ -31,6 +31,7 @@ class GameController extends React.Component {
       player: initialPlayer,
       inDialogue: false,
       dialogue: {
+        object: null,
         progress: null,
         character: null,
         text: null
@@ -84,7 +85,6 @@ class GameController extends React.Component {
       logic.placeObject(map, "item", "101", 1, [1, 1]);
       logic.placeObject(map, "item", "999", 1, [13, 1]);
       logic.placeObject(map, "npc", "9001", 1, [5, 7], 3001);
-      logic.placeObject(map, "enemy", "1001", 1, [7, 9]);
       logic.placeObject(map, "exit", "", 1, [1, 13]);
     }
     else {
@@ -161,8 +161,8 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
-        <DialogueBox dialogue={this.state.dialogue} />
         <InfoPanel player={player} stage={this.state.stage} />
+        <DialogueBox dialogue={this.state.dialogue} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>

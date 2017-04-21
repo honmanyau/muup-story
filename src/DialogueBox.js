@@ -4,16 +4,16 @@ import './DialogueBox.css'
 class DialogueBox extends React.Component {
   render() {
     let dialogue = this.props.dialogue;
-/*
-    "0": {
-      "character": "Alice",
-      "characterid": 9001,
-      "text": "Oh, hello there, little Muup! What brings you here today?"
-    },
-*/
+    let semicolon = null;
+
+    if (dialogue.progress !== null && dialogue.character !== null) {
+      semicolon = ":";
+    }
+
+
     return(
       <div className="DialogueBox">
-        <p><strong>Dialogues:</strong> Character: {dialogue.character} Text: {dialogue.text}</p>
+        <p><strong>{dialogue.character}</strong>{semicolon} {dialogue.text}</p>
       </div>
     );
   }
