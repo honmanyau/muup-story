@@ -59,6 +59,10 @@
   background-color: black;
 }
 
+[data-objectid="9001"] {
+  background-color: salmon;
+}
+
 /* Player styling */
 [data-player="true"] {
   background-color: royalBlue;

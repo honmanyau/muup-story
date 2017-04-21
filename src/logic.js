@@ -18,8 +18,9 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
           roomId: 0,
           player: "false",
           object: {
-            id: ""
-          }
+            id: null,
+            dialogueId: null
+          },
         });
       }
       // Once a row is filled, push it into the map array
@@ -269,7 +270,7 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
 
 
 
-export function placeObject(map, object, objectId, count = 1, coor = []) {
+export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId) {
   let mapSize = map.length;
 
   for (let i = 0; i < count; i++) {
@@ -285,25 +286,29 @@ export function placeObject(map, object, objectId, count = 1, coor = []) {
       }
 
       let tile = map[objectY][objectX];
-      let allClear = tile.player === "false" && tile.object.id === "";
+      let allClear = tile.player === "false" && tile.object.id === null;
 
-      if (tile.terrain === 2 && tile.object.id === "") {
-        if (typeof object === "object" && allClear) {
+      if (tile.terrain === 2 && tile.object.id === null) {
+        if (typeof newObject === "object" && allClear) {
           tile.player = "true";
-          object.x = objectX;
-          object.y = objectY;
+          newObject.x = objectX;
+          newObject.y = objectY;
           tileNotFound = false;
           // In case of the extremely rare chance that a player ever gets generated more than once
           // due to programmatic errors
           i = count;
         }
-        else if (typeof object === "string" && allClear) {
-          switch(object) {
+        else if (typeof newObject === "string" && allClear) {
+          switch(newObject) {
             case "item":
-              tile.object = assets.items[objectId];
+              tile.object = assets.items[newObjectId];
               break;
             case "enemy":
-              tile.object = assets.enemies[objectId];
+              tile.object = assets.enemies[newObjectId];
+              break;
+            case "npc":
+              tile.object = assets.npcs[newObjectId];
+              tile.object.dialogueId = dialogueId;
               break;
             // This is technically "cheating" because it's not exactly adding an object to the tile
             case "exit":
@@ -322,7 +327,7 @@ export function placeObject(map, object, objectId, count = 1, coor = []) {
 
 
 
-export function handleUserInput(map, player, key) {
+export function handleUserInput(key, map, player, flags) {
   let playerNextY = 0;
   let playerNextX = 0;
 
@@ -367,7 +372,7 @@ export function handleUserInput(map, player, key) {
     let replaceObject = "";
 
     // If it is an empty, traversable tile
-    if (objectId === "") {
+    if (objectId === null) {
       movePlayer = true;
     }
     // Else if it contains a consumable item
@@ -414,9 +419,13 @@ export function handleUserInput(map, player, key) {
         clearObject = true;
       }
     }
+    // If the object is an NPC
+    else if (objectId > 9000 && objectId < 10000) {
+      flags.inDialogue = true;
+    }
 
     // Move the player and record the new position
-    if (movePlayer) {
+    if (movePlayer && flags.inDialogue === false) {
       curTile.player = "false";
       nextTile.player = "true";
       player.y = playerNextY;
@@ -434,6 +443,6 @@ export function handleUserInput(map, player, key) {
     }
   }
   else if (nextTile.terrain === 99) {
-    return true;
+    flags.changeLevel = true;
   }
 }

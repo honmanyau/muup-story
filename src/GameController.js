@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './GameController.css'
-import Tile from './Tile.js'
-import Map from './Map.js'
+import DialogueBox from './DialogueBox'
 import InfoPanel from './InfoPanel.js'
+import Map from './Map.js'
 import * as logic from './logic.js'
 import * as assets from './assets.js'
 
@@ -13,6 +13,7 @@ class GameController extends React.Component {
     this.state = {
       map: [],
       stage: 0,
+      inDialogue: false,
       player: {
         id: "player",
         name: "",
@@ -74,8 +75,9 @@ class GameController extends React.Component {
       playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
       logic.placeObject(map, "item", "i101", 1, [1, 1]);
       logic.placeObject(map, "item", "i999", 1, [13, 1]);
+      logic.placeObject(map, "npc", "n9001", 1, [5, 7], 3001);
       logic.placeObject(map, "enemy", "e1001", 1, [7, 9]);
-      logic.placeObject(map, "exit", "", 1, [1, 13])
+      logic.placeObject(map, "exit", "", 1, [1, 13]);
     }
     else {
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
@@ -97,11 +99,14 @@ class GameController extends React.Component {
     let map = this.state.map.slice(0);
     let key = event.which || event.keyCode;
     let player = JSON.parse(JSON.stringify(this.state.player));
-    let changeLevel = false;
+    let flags = {
+      changeLevel: false,
+      inDialogue: false
+    };
 
-    changeLevel = logic.handleUserInput(map, player, key);
+    logic.handleUserInput(key, map, player, flags);
 
-    if (changeLevel) {
+    if (flags.changeLevel) {
       let nextStage = this.state.stage + 1;
 
       this.setState({
@@ -138,7 +143,9 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
+        <DialogueBox dialogue="" />
         <InfoPanel player={player} stage={this.state.stage} />
+
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
