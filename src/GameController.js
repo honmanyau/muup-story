@@ -77,7 +77,7 @@ class GameController extends React.Component {
 
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
       // Create the player character and write the coordinates to the player object for state-setting
-      playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
+      logic.placeObject(map, player, player.id, 1, [7, 7]);
       logic.placeObject(map, "item", "101", 1, [1, 1]);
       logic.placeObject(map, "item", "999", 1, [13, 1]);
       logic.placeObject(map, "npc", "9001", 1, [5, 7], 3001);
@@ -87,9 +87,10 @@ class GameController extends React.Component {
     else {
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
       // Create the player character and write the coordinates to the player object for state-setting
-      playerPosition = logic.placeObject(map, player, player.id);
+      logic.placeObject(map, player, player.id);
       // Create healing objcets
       logic.placeObject(map, "item", "101", 10);
+      logic.placeObject(map, "enemy", "1001", 10);
       logic.placeObject(map, "item", "999");
       logic.placeObject(map, "exit");
     }
@@ -125,6 +126,9 @@ class GameController extends React.Component {
       });
 
       this.generateNewlevel(nextStage);
+    }
+    else if (player.hp < 1) {
+      this.generateNewlevel(0);
     }
     else {
       this.setState({

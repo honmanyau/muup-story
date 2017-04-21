@@ -490,6 +490,8 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       // Decrease enemy HP
       enemy.hp = enemy.hp - player.attack;
 
+      // Player death is handled by GameController.js
+
       if (enemy.hp < 0) {
         clearObject = true;
       }
