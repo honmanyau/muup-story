@@ -6,11 +6,15 @@ const initialObject = {
   dialogueId: null
 };
 
+
+
 export function JSONClone(object) {
   let newObject = JSON.parse(JSON.stringify(object));
 
   return newObject;
 }
+
+
 
 export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
@@ -274,6 +278,70 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
   return map;
 }; // generateLevel(map) {
 
+
+
+export function addDialogue(map, dialogueId, objectId, objectCoor = []) {
+  if (objectCoor.length !== 2) {
+    for (var y = 0; y < map.length; y++) {
+      let tileFound = false;
+
+      for (var x = 0; x < map.length; x++) {
+        let tile = map[y][x];
+
+        if (tile.object.id === objectId) {
+          tile.object.dialogueId = dialogueId;
+
+          tileFound = true;
+
+          break;
+        }
+      }
+
+      if (tileFound) {
+        break;
+      }
+    }
+  }
+  else if (objectCoor.length === 2) {
+    let tile = map[objectCoor[0]][objectCoor[1]];
+
+    tile.object.dialogueId = dialogueId;
+  }
+}
+
+
+
+export function removeDialogue(map, dialogueId, objectId, objectCoor = []) {
+  if (objectCoor.length !== 2) {
+    for (var y = 0; y < map.length; y++) {
+      let tileFound = false;
+
+      for (var x = 0; x < map.length; x++) {
+        let tile = map[y][x];
+
+        if (tile.object.id === objectId) {
+          tile.object.dialogueId = null;
+
+          tileFound = true;
+
+          break;
+        }
+      }
+
+      if (tileFound) {
+        break;
+      }
+    }
+  }
+  else if (objectCoor.length === 2) {
+    let tile = map[objectCoor[0]][objectCoor[1]];
+
+    tile.object.dialogueId = null;
+  }
+}
+
+
+
 export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId) {
   let mapSize = map.length;
 
@@ -284,7 +352,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
       let objectY = Math.floor(Math.random() * mapSize);
       let objectX = Math.floor(Math.random() * mapSize);
 
-      if (coor.length !== 0) {
+      if (coor.length === 2) {
         objectY = coor[0];
         objectX = coor[1];
       }
@@ -292,7 +360,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
       let tile = map[objectY][objectX];
       let allClear = tile.player === "false" && tile.object.id === null;
 
-      if (coor.length !== 0 && allClear === false) {
+      if (coor.length === 2 && allClear === false) {
         break;
       }
 
@@ -416,7 +484,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     // If the object is an enemy
     else if (objectId > 1000 && objectId < 2000) {
       let enemy = nextTile.object;
-      console.log(enemy)
+
       // Decrease player HP
       player.hp = player.hp - enemy.attack;
       // Decrease enemy HP
@@ -451,12 +519,8 @@ export function handleUserInput(key, map, player, flags, dialogue) {
           dialogue.text = curDialogue.text;
 
           if (triggers.length !== 0) {
-          console.log("Nya", triggers)
             triggers.forEach((trigger) => {
-              if (trigger.type === "create") {
-                console.log("nya")
-                placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates)
-              }
+              handleTrigger(map, trigger);
             })
           }
 
@@ -495,11 +559,19 @@ export function handleUserInput(key, map, player, flags, dialogue) {
   }
 }
 
-export function addDialogue(map, objectId, coor = []) {
-  for (var y = 0; y < map.length; y++) {
-    for (var x = 0; x < map.length; x++) {
-      let tile = [map][y][x];
 
-    }
+export function handleTrigger(map, trigger) {
+  switch(trigger.type) {
+    case "placeObject":
+      placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates);
+      break;
+    case "addDialogue":
+      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+      break;
+    case "removeDialogue":
+      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+      break;
+    default:
+      break;
   }
 }

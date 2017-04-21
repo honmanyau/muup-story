@@ -75,11 +75,12 @@ export const dialogues = {
         "text": "--A strange, dark crystal appeared next to Alice.--",
         "triggers": [
           {
-            "type": "create",
+            "type": "placeObject",
             "coordinates": [5, 9],
             "objecttype": "enemy",
             "objectid": "1001",
-            "objectamount": 1
+            "objectamount": 1,
+            "dialogueid": null
           }
         ]
       }
