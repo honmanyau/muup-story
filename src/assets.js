@@ -5,14 +5,16 @@ export const items = {
     "name": "Crystal of Clarity",
     "type": "Healing",
     "affected": "hp",
-    "effect": +20
+    "effect": +20,
+    "dialogueid": null
   },
   "999": {
     "id": 999,
     "name": "Excalibur",
     "type": "Weapon",
     "affected": "attack",
-    "effect": 99
+    "effect": 99,
+    "dialogueid": null
   }
 }
 
@@ -26,7 +28,8 @@ export const enemies = {
     "mhp": 25,
     "hp": 25,
     "attack": 10,
-    "loot": ""
+    "loot": "",
+    "dialogueid": null
   }
 }
 
@@ -98,6 +101,7 @@ export const npcs = {
     "mhp": 9999,
     "hp": 9999,
     "attack": 9999,
-    "loot": "Caliburn"
+    "loot": "Caliburn",
+    "dialogueid": null,
   }
 }
