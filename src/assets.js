@@ -40,44 +40,48 @@ export const dialogues = {
       "0": {
         "character": "Alice",
         "characterid": 9001,
-        "text": "Oh, hello there, little Muup! What brings you here today?"
+        "text": "Oh, hello there, little Muup! What brings you here today?",
+        "triggers": []
       },
       "1": {
         "character": "Muup",
         "characterid": "player",
         "text": "I was just browsing on the Int... I mean, I was just strolling in the forst.",
-        "trigger": {}
+        "triggers": []
       },
       "2": {
         "character": "Alice",
         "characterid": 9001,
         "text": "I see! In any case, you came at the right time! It looks like we have a bit of trouble in the forst.",
-        "trigger": {}
+        "triggers": []
 
       },
       "3": {
         "character": "Muup",
         "characterid": "player",
         "text": "Oh... what happened? (Maybe I shouldn't have clicked on the Tutorial button).",
-        "trigger": {}
+        "triggers": []
 
       },
       "4": {
         "character": "Alice",
         "characterid": 9001,
         "text": "Strange crystals with dark energy started appearing and they are corrupting the forest... oh, no!",
-        "trigger": {}
+        "triggers": []
       },
       "5": {
         "character": "",
         "characterid": "voiceover",
         "text": "--A strange, dark crystal appeared next to Alice.--",
-        "trigger": {
-          "type": "create",
-          "coordinates": [9, 8],
-          "objecttype": "enemies",
-          "objectid": "e1001"
-        }
+        "triggers": [
+          {
+            "type": "create",
+            "coordinates": [5, 9],
+            "objecttype": "enemy",
+            "objectid": "e1001",
+            "objectamount": 1
+          }
+        ]
       }
     }
   }

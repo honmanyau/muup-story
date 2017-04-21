@@ -1,6 +1,11 @@
 import * as assets from './assets.js'
 // All parameters used in the functions here are always passed from GameController.js
 
+const initialObject = {
+  id: null,
+  dialogueId: null
+};
+
 export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
 
@@ -17,10 +22,7 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
           terrain: 0,
           roomId: 0,
           player: "false",
-          object: {
-            id: null,
-            dialogueId: null
-          },
+          object: initialObject
         });
       }
       // Once a row is filled, push it into the map array
@@ -252,8 +254,6 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
       let availableSizes = [];
       let roomSize = roomScan(mapY, mapX);
 
-      console.log(roomSize)
-
       if (roomSize !== 0) {
         createRoom(roomSize, mapY, mapX)
       }
@@ -267,8 +267,6 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
 
   return map;
 }; // generateLevel(map) {
-
-
 
 export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId) {
   let mapSize = map.length;
@@ -325,9 +323,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
   }
 }
 
-
-
-export function handleUserInput(key, map, player, flags) {
+export function handleUserInput(key, map, player, flags, dialogue) {
   let playerNextY = 0;
   let playerNextX = 0;
 
@@ -369,7 +365,7 @@ export function handleUserInput(key, map, player, flags) {
 
     let movePlayer = false;
     let clearObject = false;
-    let replaceObject = "";
+    let replaceObject = null;
 
     // If it is an empty, traversable tile
     if (objectId === null) {
@@ -396,7 +392,7 @@ export function handleUserInput(key, map, player, flags) {
         let weaponId = "i" + objectId;
 
         if (player.weaponId !== "") {
-          replaceObject  = player.weaponId;
+          replaceObject = player.weaponId;
         }
 
         player.weapon = objectName;
@@ -421,7 +417,47 @@ export function handleUserInput(key, map, player, flags) {
     }
     // If the object is an NPC
     else if (objectId > 9000 && objectId < 10000) {
-      flags.inDialogue = true;
+      let npc = nextTile.object;
+
+      if (npc.dialogueId !== undefined) {
+        let dialogueSet = assets.dialogues["d" + npc.dialogueId].content;
+        let setLength = Object.keys(dialogueSet).length;
+        let curDialogueId = null;
+
+        if (dialogue.progress === null) {
+          curDialogueId = 0;
+        }
+        else {
+          curDialogueId = dialogue.progress + 1;
+        }
+
+        if (curDialogueId < setLength) {
+          let curDialogue = dialogueSet[curDialogueId];
+          let triggers = curDialogue.triggers;
+
+          dialogue.progress = curDialogueId;
+          dialogue.character = curDialogue.character;
+          dialogue.text = curDialogue.text;
+
+          if (triggers.length !== 0) {
+          console.log("Nya", triggers)
+            triggers.forEach((trigger) => {
+              if (trigger.type === "create") {
+                placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates)
+              }
+            })
+          }
+
+          flags.inDialogue = true;
+        }
+        else {
+          dialogue.progress = null;
+          dialogue.character = null;
+          dialogue.text = null;
+
+          flags.inDialogue = false;
+        }
+      }
     }
 
     // Move the player and record the new position
@@ -434,15 +470,24 @@ export function handleUserInput(key, map, player, flags) {
 
     // Clear the tile of the pervious object
     if (clearObject) {
-      nextTile.object = {id: ""};
+      nextTile.object = initialObject;
     }
 
     // Drop the previous weapon if the player is already holding one
-    if (replaceObject !== "") {
+    if (replaceObject !== null) {
       nextTile.object = assets.items[replaceObject];
     }
   }
   else if (nextTile.terrain === 99) {
     flags.changeLevel = true;
+  }
+}
+
+export function addDialogue(map, objectId, coor = []) {
+  for (var y = 0; y < map.length; y++) {
+    for (var x = 0; x < map.length; x++) {
+      let tile = [map][y][x];
+
+    }
   }
 }

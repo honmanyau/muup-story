@@ -13,10 +13,9 @@ class GameController extends React.Component {
     this.state = {
       map: [],
       stage: 0,
-      inDialogue: false,
       player: {
         id: "player",
-        name: "",
+        name: null,
         x: 0,
         y: 0,
         level: 1,
@@ -26,6 +25,12 @@ class GameController extends React.Component {
         weapon: "Body slam",
         weaponId: "",
         attack: 10
+      },
+      inDialogue: false,
+      dialogue: {
+        progress: null,
+        character: null,
+        text: null
       }
     };
 
@@ -101,10 +106,16 @@ class GameController extends React.Component {
     let player = JSON.parse(JSON.stringify(this.state.player));
     let flags = {
       changeLevel: false,
-      inDialogue: false
+      inDialogue: this.state.inDialogue
     };
+    let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
-    logic.handleUserInput(key, map, player, flags);
+    logic.handleUserInput(key, map, player, flags, dialogue);
+    
+    this.setState({
+      inDialogue: flags.inDialogue,
+      dialogue: dialogue
+    });
 
     if (flags.changeLevel) {
       let nextStage = this.state.stage + 1;
@@ -143,9 +154,8 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
-        <DialogueBox dialogue="" />
+        <DialogueBox dialogue={this.state.dialogue} />
         <InfoPanel player={player} stage={this.state.stage} />
-
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
