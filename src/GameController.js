@@ -6,6 +6,21 @@ import Map from './Map.js'
 import * as logic from './logic.js'
 import * as assets from './assets.js'
 
+const initialPlayer = {
+  id: "player",
+  name: null,
+  x: 0,
+  y: 0,
+  level: 1,
+  xp: 0,
+  mhp: 50,
+  hp: 50,
+  attack: 10,
+  weapon: "Body slam",
+  weaponId: "",
+  weaponAttack: 10
+};
+
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -13,19 +28,7 @@ class GameController extends React.Component {
     this.state = {
       map: [],
       stage: 0,
-      player: {
-        id: "player",
-        name: null,
-        x: 0,
-        y: 0,
-        level: 1,
-        XP: 0,
-        mhp: 50,
-        hp: 50,
-        weapon: "Body slam",
-        weaponId: "",
-        attack: 10
-      },
+      player: initialPlayer,
       inDialogue: false,
       dialogue: {
         progress: null,

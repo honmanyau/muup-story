@@ -22,13 +22,13 @@ export const items = {
 export const enemies = {
   "1001": {
     "id": 1001,
-    "name": "",
+    "name": "Crystal of Shadow",
     "type": "Enemy",
-    "level": 1,
-    "mhp": 25,
-    "hp": 25,
-    "attack": 10,
-    "loot": "",
+    "level": null,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "loot": [],
     "dialogueid": null
   }
 }

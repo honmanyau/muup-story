@@ -380,7 +380,14 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
               tile.object = JSONClone(assets.items[newObjectId]);
               break;
             case "enemy":
-              tile.object = JSONClone(assets.enemies[newObjectId]);
+              let elll = 1;
+              let enemy = JSONClone(assets.enemies[newObjectId]);
+
+              enemy.hp = Math.floor(11.552 * elll + 9.00);
+              enemy.attack = Math.floor(0.327 * elll + 10);
+              enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * elll))
+
+              tile.object = enemy;
               break;
             case "npc":
               tile.object = JSONClone(assets.npcs[newObjectId]);
@@ -400,6 +407,39 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
     }
   }
 }
+
+
+
+function handleTrigger(map, trigger) {
+  switch(trigger.type) {
+    case "placeObject":
+      placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates);
+      break;
+    case "addDialogue":
+      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+      break;
+    case "removeDialogue":
+      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+      break;
+    default:
+      break;
+  }
+}
+
+
+
+function updatePlayerStats(player) {
+  let previousLevel = player.level;
+
+  player.level = Math.floor(Math.log((player.xp + 165.5) / 165.5) * 5) + 1;
+  player.mhp = player.level * 10 + 40;
+  player.attack = player.level + player.weaponAttack;
+
+  if (previousLevel !== player.level) {
+    player.hp = player.mhp;
+  }
+}
+
 
 export function handleUserInput(key, map, player, flags, dialogue) {
   let playerNextY = 0;
@@ -475,7 +515,9 @@ export function handleUserInput(key, map, player, flags, dialogue) {
 
         player.weapon = objectName;
         player.weaponId = weaponId;
-        player[itemAffectedStat] = player.level + itemEffect;
+        player.weaponAttack = itemEffect;
+
+        updatePlayerStats(player);
       }
 
       clearObject = true;
@@ -492,7 +534,11 @@ export function handleUserInput(key, map, player, flags, dialogue) {
 
       // Player death is handled by GameController.js
 
-      if (enemy.hp < 0) {
+      if (enemy.hp < 1) {
+        player.xp = player.xp + enemy.xp;
+
+        updatePlayerStats(player);
+
         clearObject = true;
       }
     }
@@ -558,22 +604,5 @@ export function handleUserInput(key, map, player, flags, dialogue) {
   }
   else if (nextTile.terrain === 99) {
     flags.changeLevel = true;
-  }
-}
-
-
-export function handleTrigger(map, trigger) {
-  switch(trigger.type) {
-    case "placeObject":
-      placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates);
-      break;
-    case "addDialogue":
-      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
-      break;
-    case "removeDialogue":
-      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
-      break;
-    default:
-      break;
   }
 }
