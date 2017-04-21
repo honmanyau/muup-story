@@ -80,7 +80,7 @@ class GameController extends React.Component {
       playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
       logic.placeObject(map, "item", "101", 1, [1, 1]);
       logic.placeObject(map, "item", "999", 1, [13, 1]);
-      logic.placeObject(map, "npc", "9001", 1, [5, 7]);
+      logic.placeObject(map, "npc", "9001", 1, [5, 7], 3001);
       logic.placeObject(map, "enemy", "1001", 1, [7, 9]);
       logic.placeObject(map, "exit", "", 1, [1, 13]);
     }
