@@ -78,10 +78,10 @@ class GameController extends React.Component {
       logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
       // Create the player character and write the coordinates to the player object for state-setting
       playerPosition = logic.placeObject(map, player, player.id, 1, [7, 7]);
-      logic.placeObject(map, "item", "i101", 1, [1, 1]);
-      logic.placeObject(map, "item", "i999", 1, [13, 1]);
-      logic.placeObject(map, "npc", "n9001", 1, [5, 7], 3001);
-      logic.placeObject(map, "enemy", "e1001", 1, [7, 9]);
+      logic.placeObject(map, "item", "101", 1, [1, 1]);
+      logic.placeObject(map, "item", "999", 1, [13, 1]);
+      logic.placeObject(map, "npc", "9001", 1, [5, 7], 3001);
+      logic.placeObject(map, "enemy", "1001", 1, [7, 9]);
       logic.placeObject(map, "exit", "", 1, [1, 13]);
     }
     else {
@@ -89,8 +89,8 @@ class GameController extends React.Component {
       // Create the player character and write the coordinates to the player object for state-setting
       playerPosition = logic.placeObject(map, player, player.id);
       // Create healing objcets
-      logic.placeObject(map, "item", "i101", 10);
-      logic.placeObject(map, "item", "i999");
+      logic.placeObject(map, "item", "101", 10);
+      logic.placeObject(map, "item", "999");
       logic.placeObject(map, "exit");
     }
 
@@ -111,7 +111,7 @@ class GameController extends React.Component {
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
     logic.handleUserInput(key, map, player, flags, dialogue);
-    
+
     this.setState({
       inDialogue: flags.inDialogue,
       dialogue: dialogue

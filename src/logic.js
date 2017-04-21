@@ -6,6 +6,12 @@ const initialObject = {
   dialogueId: null
 };
 
+export function JSONClone(object) {
+  let newObject = JSON.parse(JSON.stringify(object));
+
+  return newObject;
+}
+
 export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
 
@@ -286,6 +292,10 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
       let tile = map[objectY][objectX];
       let allClear = tile.player === "false" && tile.object.id === null;
 
+      if (coor.length !== 0 && allClear === false) {
+        break;
+      }
+
       if (tile.terrain === 2 && tile.object.id === null) {
         if (typeof newObject === "object" && allClear) {
           tile.player = "true";
@@ -299,13 +309,13 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
         else if (typeof newObject === "string" && allClear) {
           switch(newObject) {
             case "item":
-              tile.object = assets.items[newObjectId];
+              tile.object = JSONClone(assets.items[newObjectId]);
               break;
             case "enemy":
-              tile.object = assets.enemies[newObjectId];
+              tile.object = JSONClone(assets.enemies[newObjectId]);
               break;
             case "npc":
-              tile.object = assets.npcs[newObjectId];
+              tile.object = JSONClone(assets.npcs[newObjectId]);
               tile.object.dialogueId = dialogueId;
               break;
             // This is technically "cheating" because it's not exactly adding an object to the tile
@@ -389,7 +399,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       }
       // If the item is a weapon
       else if (objectType === "Weapon"){
-        let weaponId = "i" + objectId;
+        let weaponId = objectId;
 
         if (player.weaponId !== "") {
           replaceObject = player.weaponId;
@@ -406,6 +416,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     // If the object is an enemy
     else if (objectId > 1000 && objectId < 2000) {
       let enemy = nextTile.object;
+      console.log(enemy)
       // Decrease player HP
       player.hp = player.hp - enemy.attack;
       // Decrease enemy HP
@@ -420,7 +431,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       let npc = nextTile.object;
 
       if (npc.dialogueId !== undefined) {
-        let dialogueSet = assets.dialogues["d" + npc.dialogueId].content;
+        let dialogueSet = assets.dialogues[npc.dialogueId].content;
         let setLength = Object.keys(dialogueSet).length;
         let curDialogueId = null;
 
@@ -443,6 +454,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
           console.log("Nya", triggers)
             triggers.forEach((trigger) => {
               if (trigger.type === "create") {
+                console.log("nya")
                 placeObject(map, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates)
               }
             })

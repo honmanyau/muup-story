@@ -1,13 +1,13 @@
 // Items IDs must be between 101 and 999 (inclusive)
 export const items = {
-  "i101": {
+  "101": {
     "id": 101,
     "name": "Crystal of Clarity",
     "type": "Healing",
     "affected": "hp",
     "effect": +20
   },
-  "i999": {
+  "999": {
     "id": 999,
     "name": "Excalibur",
     "type": "Weapon",
@@ -18,7 +18,7 @@ export const items = {
 
 // Enemies IDs must be between 1001 and 1999 (inclusive)
 export const enemies = {
-  "e1001": {
+  "1001": {
     "id": 1001,
     "name": "",
     "type": "Enemy",
@@ -32,7 +32,7 @@ export const enemies = {
 
 // Dialogues must be between 3001 and 3999 (inclusive)
 export const dialogues = {
-  "d3001": {
+  "3001": {
     "id": 3001,
     "name": "Tutorial 1",
     "type": "Dialogue",
@@ -78,7 +78,7 @@ export const dialogues = {
             "type": "create",
             "coordinates": [5, 9],
             "objecttype": "enemy",
-            "objectid": "e1001",
+            "objectid": "1001",
             "objectamount": 1
           }
         ]
@@ -89,7 +89,7 @@ export const dialogues = {
 
 // NPC IDs must be between 9001 and 9999 (inclusive)
 export const npcs = {
-  "n9001": {
+  "9001": {
     "id": 9001,
     "name": "Alice",
     "type": "NPC",
