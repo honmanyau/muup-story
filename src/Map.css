@@ -91,6 +91,10 @@
   background-color: #000;
 }
 
+[data-objectid="1199"] {
+  background-color: turquoise;
+}
+
 [data-objectid="9001"] {
   background-color: salmon;
 }

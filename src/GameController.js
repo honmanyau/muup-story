@@ -34,7 +34,7 @@ class GameController extends React.Component {
 
     this.state = {
       map: [],
-      stage: 0,
+      stage: 5,
       player: initialPlayer,
       inDialogue: false,
       dialogue: initialDialogue
@@ -54,7 +54,7 @@ class GameController extends React.Component {
 
   componentDidMount() {
     //this.generateNewlevel(this.state.stage);
-    this.generateNewlevel(1);
+    this.generateNewlevel(this.state.stage);
   }
 
   generateNewlevel(stage) {
@@ -69,7 +69,7 @@ class GameController extends React.Component {
 
     this.tileSize = 40;
     this.levelWrapperSize = 14;
-    this.mapSize = 60;
+    this.mapSize = 30;
     this.minRoomSize = 7;
     this.maxRoomSize = 12;
     this.staticMargin = 0;
@@ -78,7 +78,7 @@ class GameController extends React.Component {
     // have more than two unique corridors
     this.corridorAmountBias = 0.3;
 
-    if (stage === 0) {
+    if (stage === 0 || stage === 5) {
       // Can be tidied up here
       this.mapSize = 15;
       this.minRoomSize = 15;
