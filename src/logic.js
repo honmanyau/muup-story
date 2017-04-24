@@ -16,7 +16,7 @@ export function JSONClone(object) {
 
 
 
-export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
+export function generateMap(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
 
   // Function for generating the level as an array according to the sizes specified in GameController
@@ -252,11 +252,9 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
       }
     });
 
-  }; // function generateCorridor(room) {
+  };
 
-
-  // Generate the world as an array
-  createMapArray()
+  createMapArray();
 
   // Make rooms
   for (let mapY = 0; mapY < map.length; mapY++) {
@@ -267,8 +265,8 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
       if (roomSize !== 0) {
         createRoom(roomSize, mapY, mapX)
       }
-    }
-  }
+    };
+  };
 
   // Make corridors
   roomList.forEach(function(room) {
@@ -276,11 +274,11 @@ export function generateLevel(map, mapSize, minRoomSize, maxRoomSize, staticMarg
   });
 
   return map;
-}; // generateLevel(map) {
+};
 
 
 
-export function addDialogue(map, dialogueId, objectId, objectCoor = []) {
+export function changeDialogue(map, dialogueId, objectId, objectCoor = []) {
   if (objectCoor.length !== 2) {
     for (var y = 0; y < map.length; y++) {
       let tileFound = false;
@@ -342,7 +340,7 @@ export function removeDialogue(map, dialogueId, objectId, objectCoor = []) {
 
 
 
-export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId) {
+export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId = null) {
   let mapSize = map.length;
 
   for (let i = 0; i < count; i++) {
@@ -378,6 +376,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
           switch(newObject) {
             case "item":
               tile.object = JSONClone(assets.items[newObjectId]);
+              tile.object.dialogueId = dialogueId;
               break;
             case "enemy":
               let elll = 1;
@@ -388,6 +387,7 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
               enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * elll))
 
               tile.object = enemy;
+              tile.object.dialogueId = dialogueId;
               break;
             case "npc":
               tile.object = JSONClone(assets.npcs[newObjectId]);
@@ -413,13 +413,10 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
 function handleTrigger(map, trigger) {
   switch(trigger.type) {
     case "placeObject":
-      placeObject(map, trigger.objectType, trigger.objectid, trigger.objectAmount, trigger.coordinates);
+      placeObject(map, trigger.objectType, trigger.objectid, trigger.objectAmount, trigger.coordinates, trigger.dialogueId);
       break;
-    case "addDialogue":
-      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
-      break;
-    case "removeDialogue":
-      addDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+    case "changeDialogue":
+      changeDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
       break;
     default:
       break;
@@ -440,54 +437,60 @@ function updatePlayerStats(player) {
   }
 }
 
-function handleDialogue(map, flags, dialogue, object) {
-  let dialogueSet = null;
 
-  if (object !== undefined) {
-    dialogue.object = object;
-  }
-  else if (object === undefined) {
-    object = dialogue.object;
-  }
 
-  dialogueSet = assets.dialogues[object.dialogueId].content;
-  let dialogueSetLength = Object.keys(dialogueSet).length;
-  let curDialogueId = null;
+export function handleDialogue(map, flags, dialogue, object) {
+  if (object !== undefined || dialogue.object !== null) {
+    let dialogueSet = null;
 
-  if (dialogue.progress === null) {
-    curDialogueId = 0;
-  }
-  else {
-    curDialogueId = dialogue.progress + 1;
-  }
-
-  if (curDialogueId < dialogueSetLength) {
-    let curDialogue = dialogueSet[curDialogueId];
-    let triggers = curDialogue.triggers;
-
-    dialogue.progress = curDialogueId;
-    dialogue.character = curDialogue.character;
-    dialogue.text = curDialogue.text;
-
-    if (triggers.length !== 0) {
-      triggers.forEach((trigger) => {
-        handleTrigger(map, trigger);
-      })
+    if (object !== undefined) {
+      dialogue.object = object;
+    }
+    else if (object === undefined) {
+      object = dialogue.object;
     }
 
-    flags.inDialogue = true;
-  }
-  else if (curDialogueId === dialogueSetLength) {
-    object.dialogueId = null;
+    dialogueSet = assets.dialogues[object.dialogueId].content;
+    let dialogueSetLength = Object.keys(dialogueSet).length;
+    let curDialogueId = null;
 
-    dialogue.object = null;
-    dialogue.progress = null;
-    dialogue.character = null;
-    dialogue.text = null;
+    if (dialogue.progress === null) {
+      curDialogueId = 0;
+    }
+    else {
+      curDialogueId = dialogue.progress + 1;
+    }
 
-    flags.inDialogue = false;
+    if (curDialogueId < dialogueSetLength) {
+      let curDialogue = dialogueSet[curDialogueId];
+      let triggers = curDialogue.triggers;
+
+      dialogue.progress = curDialogueId;
+      dialogue.character = curDialogue.character;
+      dialogue.text = curDialogue.text;
+
+      if (triggers.length !== 0) {
+        triggers.forEach((trigger) => {
+          handleTrigger(map, trigger);
+        })
+      }
+
+      flags.inDialogue = true;
+    }
+    else if (curDialogueId === dialogueSetLength) {
+      object.dialogueId = null;
+
+      dialogue.object = null;
+      dialogue.progress = null;
+      dialogue.character = null;
+      dialogue.text = null;
+
+      flags.inDialogue = false;
+    }
   }
 }
+
+
 
 export function handleUserInput(key, map, player, flags, dialogue) {
   let playerNextY = 0;
@@ -522,6 +525,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
 
   let curTile = map[player.y][player.x];
   let nextTile = map[playerNextY][playerNextX];
+  let postMovementDialogue = false;
 
   // If the tile is potentially traversable
   if (nextTile.terrain === 2 && flags.inDialogue === false) {
@@ -539,6 +543,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     }
     // Else if it contains a consumable item
     else if (objectId < 1000) {
+      let item = nextTile.object;
       let itemAffectedStat = nextTile.object.affected;
       let itemEffect = nextTile.object.effect;
 
@@ -568,6 +573,10 @@ export function handleUserInput(key, map, player, flags, dialogue) {
         updatePlayerStats(player);
       }
 
+      if (item.dialogueId !== null) {
+        postMovementDialogue = true;
+      }
+
       clearObject = true;
       movePlayer = true;
     }
@@ -587,6 +596,10 @@ export function handleUserInput(key, map, player, flags, dialogue) {
 
         updatePlayerStats(player);
 
+        if (enemy.dialogueId !== null) {
+          handleDialogue(map, flags, dialogue, enemy);
+        }
+
         clearObject = true;
       }
     }
@@ -594,7 +607,9 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     else if (objectId > 9000 && objectId < 10000) {
       let npc = nextTile.object;
 
-      handleDialogue(map, flags, dialogue, npc);
+      if (npc.dialogueId !== null) {
+        handleDialogue(map, flags, dialogue, npc);
+      }
     }
 
     // Move the player and record the new position
@@ -603,6 +618,10 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       nextTile.player = "true";
       player.y = playerNextY;
       player.x = playerNextX;
+
+      if (postMovementDialogue) {
+        handleDialogue(map, flags, dialogue, nextTile.object);
+      }
     }
 
     // Clear the tile of the pervious object
@@ -620,5 +639,34 @@ export function handleUserInput(key, map, player, flags, dialogue) {
   }
   else if (nextTile.terrain === 99) {
     flags.changeLevel = true;
+  }
+}
+
+
+
+export function decorateMap(map, stage, player, flags, dialogue) {
+  if (stage === 0) {
+    placeObject(map, player, "player", 1, [7, 7]);
+    placeObject(map, "npc", "9001", 1, [5, 7], 3001);
+  }
+  else if (stage === 1) {
+    player.weapon = "Caliburn Replica";
+    player.weaponId = 901;
+    player.weaponAttack = 9;
+
+    updatePlayerStats(player);
+
+    placeObject(map, player, player.id);
+    placeObject(map, "item", "101", 10);
+    placeObject(map, "enemy", "1101", 10);
+    placeObject(map, "item", "999");
+    placeObject(map, "exit");
+  }
+  else {
+    placeObject(map, player, player.id);
+    placeObject(map, "item", "101", 10);
+    placeObject(map, "enemy", "1101", 10);
+    placeObject(map, "item", "999");
+    placeObject(map, "exit");
   }
 }

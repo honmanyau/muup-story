@@ -8,12 +8,28 @@ export const items = {
     "effect": +20,
     "dialogueId": null
   },
-  "999": {
-    "id": 999,
+  "901": {
+    "id": 901,
+    "name": "Caliburn Replica",
+    "type": "Weapon",
+    "affected": "attack",
+    "effect": 10,
+    "dialogueId": null
+  },
+  "990": {
+    "id": 990,
     "name": "Excalibur",
     "type": "Weapon",
     "affected": "attack",
     "effect": 99,
+    "dialogueId": null
+  },
+  "999": {
+    "id": 999,
+    "name": "Caliburn",
+    "type": "Weapon",
+    "affected": "attack",
+    "effect": 9998,
     "dialogueId": null
   }
 }
@@ -22,6 +38,17 @@ export const items = {
 export const enemies = {
   "1001": {
     "id": 1001,
+    "name": "Crystal of Shadow",
+    "type": "Enemy",
+    "level": null,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "loot": [],
+    "dialogueId": null
+  },
+  "1101": {
+    "id": 1101,
     "name": "Crystal of Shadow",
     "type": "Enemy",
     "level": null,
@@ -83,7 +110,7 @@ export const dialogues = {
             "objectType": "enemy",
             "objectid": "1001",
             "objectAmount": 1,
-            "dialogueId": null
+            "dialogueId": 3003
           }
         ]
       },
@@ -104,7 +131,300 @@ export const dialogues = {
         "characterId": 9001,
         "text": "That doesn't matter! Just get rid of it first, please!",
         "triggers": []
+      },
+      "9": {
+        "character": null,
+        "characterId": "voiceover",
+        "text": "--Attack the strange crystal by moving towards it using either the direction keys or A, S, D, F--",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3002
+          }
+        ]
+      },
+    }
+  },
+  "3002": {
+    "id": 3002,
+    "name": "Tutorial 2",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Go get rid of the crystal already!",
+        "triggers": []
       }
+    }
+  },
+  "3003": {
+    "id": 3003,
+    "name": "Tutorial 3",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterId": "voiceover",
+        "text": "--The crystal crumbles to dust.  I should go speak with Alice--",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3004
+          }
+        ]
+      }
+    }
+  },
+  "3004": {
+    "id": 3004,
+    "name": "Tutorial 4",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Good job, little Muup! Thank you very much for saving us!",
+        "triggers": []
+      },
+      "1": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "*Mumbles* Check! That covers the basics of combat... *mumbles*.",
+        "triggers": []
+      },
+      "2": {
+        "character": "Muup",
+        "characterId": "player",
+        "text": "Wait a minute, what did you say just now?",
+        "triggers": []
+      },
+      "3": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "OH! NOTHING! *ABSOLUTELY* NOTHING.",
+        "triggers": []
+      },
+      "4": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Here! Heal up with a Crystal of Clairty! ^^",
+        "triggers": [
+          {
+            "type": "placeObject",
+            "coordinates": [5, 5],
+            "objectType": "item",
+            "objectid": "101",
+            "objectAmount": 1,
+            "dialogueId": 3006
+          }
+        ]
+      },
+    }
+  },
+  "3005": {
+    "id": 3005,
+    "name": "Tutorial 5",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Go on, don't be shy, it's my treat.",
+        "triggers": []
+      }
+    }
+  },
+  "3006": {
+    "id": 3006,
+    "name": "Tutorial 6",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterId": "voiceover",
+        "text": "--HP fully restored--",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3007
+          }
+        ]
+      }
+    }
+  },
+  "3007": {
+    "id": 3007,
+    "name": "Tutorial 7",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Apart from healing items, you will come aross different types of items during your journey in the forest.",
+        "triggers": []
+      },
+      "1": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Weapons, for example, increase the damage you deal to enemies.  Here, try this sword.",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3008
+          },
+          {
+            "type": "placeObject",
+            "coordinates": [7, 7],
+            "objectType": "item",
+            "objectid": "999",
+            "objectAmount": 1,
+            "dialogueId": 3009
+          }
+        ]
+      },
+    }
+  },
+  "3008": {
+    "id": 3008,
+    "name": "Tutorial 8",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Try picking up the weapon see how your attack power changes with it.",
+        "triggers": []
+      },
+    }
+  },
+  "3009": {
+    "id": 3009,
+    "name": "Tutorial 9",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterId": "voiceover",
+        "text": "--Attack power increased dramatically--",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3010
+          }
+        ]
+      },
+    }
+  },
+  "3010": {
+    "id": 3010,
+    "name": "Tutorial 10",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Muup",
+        "characterId": "player",
+        "text": "Thanks, Alice! I think the rest of the journey will be fine with this sword!",
+        "triggers": []
+      },
+      "1": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Sorry, little Muup.  I have to take Caliburn back.",
+        "triggers": []
+      },
+      "2": {
+        "character": "Muup",
+        "characterId": "player",
+        "text": "Wait... what!?",
+        "triggers": []
+      },
+      "3": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Caliburn must be kept in this sanctuary and, uh... my life is, um... tied to it.",
+        "triggers": []
+      },
+      "4": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Really.  REALLY!",
+        "triggers": []
+      },
+      "5": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Here, you can have a replica that is *almost* just as good.",
+        "triggers": []
+      },
+      "6": {
+        "character": "Muup",
+        "characterId": "player",
+        "text": "Oh! Thanks a bunch, Alice! (Is it just me or did Alice's gaze shfit for a brief moment?)",
+        "triggers": []
+      },
+      "7": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "*Mumbles* Phew... that was close *mumbles*.",
+        "triggers": []
+      },
+      "8": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Alrighty! I think you are ready for your adventure!",
+        "triggers": []
+      },
+      "9": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Just go to the exit to being your adventure! I will miss you, little Muup!",
+        "triggers": [
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objectType": "npc",
+            "objectid": "9001",
+            "dialogueId": 3011
+          },
+          {
+            "type": "placeObject",
+            "coordinates": [13, 7],
+            "objectType": "exit",
+            "objectid": null,
+            "objectAmount": 1,
+            "dialogueId": null
+          }
+        ]
+      },
+    }
+  },
+  "3011": {
+    "id": 3011,
+    "name": "Tutorial 11",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterId": 9001,
+        "text": "Bye, little Muup!",
+        "triggers": []
+      },
     }
   }
 }

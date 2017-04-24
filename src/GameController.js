@@ -18,7 +18,7 @@ const initialPlayer = {
   attack: 10,
   weapon: "Body slam",
   weaponId: "",
-  weaponAttack: 10
+  weaponAttack: 9
 };
 
 class GameController extends React.Component {
@@ -54,10 +54,15 @@ class GameController extends React.Component {
     this.generateNewlevel(this.state.stage);
   }
 
-  generateNewlevel(level) {
+  generateNewlevel(stage) {
     let map = [];
     let playerPosition = {};
     let player = JSON.parse(JSON.stringify(this.state.player));
+    let flags = {
+      changeLevel: false,
+      inDialogue: this.state.inDialogue
+    };
+    let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
     this.tileSize = 40;
     this.levelWrapperSize = 14;
@@ -70,7 +75,7 @@ class GameController extends React.Component {
     // have more than two unique corridors
     this.corridorAmountBias = 0.3;
 
-    if (level === 0) {
+    if (stage === 0) {
       // Can be tidied up here
       this.mapSize = 15;
       this.minRoomSize = 15;
@@ -79,28 +84,19 @@ class GameController extends React.Component {
       this.marginVariability = 0;
       this.corridorAmountBias = 0;
 
-      logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      // Create the player character and write the coordinates to the player object for state-setting
-      logic.placeObject(map, player, player.id, 1, [7, 7]);
-      logic.placeObject(map, "item", "101", 1, [1, 1]);
-      logic.placeObject(map, "item", "999", 1, [13, 1]);
-      logic.placeObject(map, "npc", "9001", 1, [5, 7], 3001);
-      logic.placeObject(map, "exit", "", 1, [1, 13]);
+      logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
+      logic.decorateMap(map, stage, player, flags, dialogue);
     }
     else {
-      logic.generateLevel(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      // Create the player character and write the coordinates to the player object for state-setting
-      logic.placeObject(map, player, player.id);
-      // Create healing objcets
-      logic.placeObject(map, "item", "101", 10);
-      logic.placeObject(map, "enemy", "1001", 10);
-      logic.placeObject(map, "item", "999");
-      logic.placeObject(map, "exit");
+      logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
+      logic.decorateMap(map, stage, player, flags, dialogue);
     }
 
     this.setState({
       map: map,
-      player: player
+      player: player,
+      inDialogue: flags.inDialogue,
+      dialogue: dialogue,
     });
   }
 
@@ -115,11 +111,6 @@ class GameController extends React.Component {
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
     logic.handleUserInput(key, map, player, flags, dialogue);
-
-    this.setState({
-      inDialogue: flags.inDialogue,
-      dialogue: dialogue
-    });
 
     if (flags.changeLevel) {
       let nextStage = this.state.stage + 1;
@@ -136,7 +127,9 @@ class GameController extends React.Component {
     else {
       this.setState({
         map: map,
-        player: player
+        player: player,
+        inDialogue: flags.inDialogue,
+        dialogue: dialogue
       });
     }
   }
@@ -162,11 +155,11 @@ class GameController extends React.Component {
     return (
       <div className="GameController-gameContainer">
         <InfoPanel player={player} stage={this.state.stage} />
-        <DialogueBox dialogue={this.state.dialogue} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <Map map={this.state.map} style={mapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
         </div>
+        <DialogueBox dialogue={this.state.dialogue} />
       </div>
     );
   }

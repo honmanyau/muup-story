@@ -13,7 +13,7 @@ class DialogueBox extends React.Component {
 
     return(
       <div className="DialogueBox">
-        <p><strong>{dialogue.character}</strong>{semicolon} {dialogue.text}</p>
+        <h3><strong>{dialogue.character}</strong>{semicolon} {dialogue.text}</h3>
       </div>
     );
   }
