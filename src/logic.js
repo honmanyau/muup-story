@@ -635,7 +635,11 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     }
   }
   else if (flags.inDialogue) {
-    handleDialogue(map, flags, dialogue);
+    let movementKeys = [37, 38, 39, 40, 65, 68, 83, 87];
+
+    if (movementKeys.indexOf(key) === -1) {
+      handleDialogue(map, flags, dialogue);
+    }
   }
   else if (nextTile.terrain === 99) {
     flags.changeLevel = true;

@@ -135,7 +135,7 @@ export const dialogues = {
       "9": {
         "character": null,
         "characterId": "voiceover",
-        "text": "--Attack the strange crystal by moving towards it using either the direction keys or A, S, D, F--",
+        "text": "--Attack the strange crystal by moving towards it using either the direction keys or A, S, D, W--",
         "triggers": [
           {
             "type": "changeDialogue",
@@ -375,7 +375,7 @@ export const dialogues = {
       "6": {
         "character": "Muup",
         "characterId": "player",
-        "text": "Oh! Thanks a bunch, Alice! (Is it just me or did Alice's gaze shfit for a brief moment?)",
+        "text": "Oh! Thanks a bunch, Alice! (Is it just me or did Alice shift her gaze for a brief moment?)",
         "triggers": []
       },
       "7": {
