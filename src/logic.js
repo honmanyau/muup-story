@@ -461,7 +461,7 @@ export function placeObject(map, stage, player, newObjectType, newObjectId, coun
 function handleTrigger(map, stage, player, trigger) {
   switch(trigger.type) {
     case "placeObject":
-      placeObject(map, stage, player, trigger.objecttype, trigger.objectid, trigger.objectAmount, trigger.coordinates, trigger.dialogueid);
+      placeObject(map, stage, player, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates, trigger.dialogueid);
 
       break;
     case "changeDialogue":

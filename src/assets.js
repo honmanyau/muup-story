@@ -191,7 +191,7 @@ export const dialogues = {
             "coordinates": [5, 9],
             "objecttype": "enemy",
             "objectid": "1001",
-            "objectAmount": 1,
+            "objectamount": 1,
             "dialogueid": 3003
           }
         ]
@@ -303,7 +303,7 @@ export const dialogues = {
             "coordinates": [5, 5],
             "objecttype": "item",
             "objectid": "901",
-            "objectAmount": 1,
+            "objectamount": 1,
             "dialogueid": 3006
           }
         ]
@@ -372,7 +372,7 @@ export const dialogues = {
             "coordinates": [7, 7],
             "objecttype": "item",
             "objectid": "999",
-            "objectAmount": 1,
+            "objectamount": 1,
             "dialogueid": 3009
           }
         ]
@@ -489,7 +489,7 @@ export const dialogues = {
             "coordinates": [12, 7],
             "objecttype": "exit",
             "objectid": null,
-            "objectAmount": 1,
+            "objectamount": 1,
             "dialogueid": null
           }
         ]
@@ -530,7 +530,7 @@ export const dialogues = {
             "coordinates": [],
             "objecttype": "exit",
             "objectid": null,
-            "objectAmount": 1,
+            "objectamount": 1,
             "dialogueid": null
           }
         ]
