@@ -21,6 +21,13 @@ const initialPlayer = {
   weaponAttack: 9
 };
 
+const initialDialogue = {
+  object: null,
+  progress: null,
+  character: null,
+  text: null
+};
+
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -30,12 +37,7 @@ class GameController extends React.Component {
       stage: 0,
       player: initialPlayer,
       inDialogue: false,
-      dialogue: {
-        object: null,
-        progress: null,
-        character: null,
-        text: null
-      }
+      dialogue: initialDialogue
     };
 
     this.generateNewlevel = this.generateNewlevel.bind(this);
@@ -51,7 +53,8 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    this.generateNewlevel(this.state.stage);
+    //this.generateNewlevel(this.state.stage);
+    this.generateNewlevel(1);
   }
 
   generateNewlevel(stage) {
@@ -66,11 +69,11 @@ class GameController extends React.Component {
 
     this.tileSize = 40;
     this.levelWrapperSize = 14;
-    this.mapSize = 20;
+    this.mapSize = 60;
     this.minRoomSize = 7;
     this.maxRoomSize = 12;
     this.staticMargin = 0;
-    this.marginVariability = 3;
+    this.marginVariability = 4;
     // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can
     // have more than two unique corridors
     this.corridorAmountBias = 0.3;
@@ -102,6 +105,7 @@ class GameController extends React.Component {
 
   handleUserInput(event) {
     let map = this.state.map.slice(0);
+    let stage = this.state.stage;
     let key = event.which || event.keyCode;
     let player = JSON.parse(JSON.stringify(this.state.player));
     let flags = {
@@ -110,7 +114,7 @@ class GameController extends React.Component {
     };
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
-    logic.handleUserInput(key, map, player, flags, dialogue);
+    logic.handleUserInput(key, map, stage, player, flags, dialogue);
 
     if (flags.changeLevel) {
       let nextStage = this.state.stage + 1;

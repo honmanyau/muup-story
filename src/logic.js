@@ -340,7 +340,7 @@ export function removeDialogue(map, dialogueId, objectId, objectCoor = []) {
 
 
 
-export function placeObject(map, newObject, newObjectId, count = 1, coor = [], dialogueId = null) {
+export function placeObject(map, stage, player, newObjectType, newObjectId, count = 1, coor = [], dialogueId = null) {
   let mapSize = map.length;
 
   for (let i = 0; i < count; i++) {
@@ -362,47 +362,66 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
         break;
       }
 
-      if (tile.terrain === 2 && tile.object.id === null) {
-        if (typeof newObject === "object" && allClear) {
-          tile.player = "true";
-          newObject.x = objectX;
-          newObject.y = objectY;
-          tileNotFound = false;
-          // In case of the extremely rare chance that a player ever gets generated more than once
-          // due to programmatic errors
-          i = count;
+      if (tile.terrain === 2 && allClear) {
+        switch(newObjectType) {
+          case "player":
+            tile.player = "true";
+            player.x = objectX;
+            player. y = objectY;
+            tileNotFound = false;
+
+            i = count;
+
+            break;
+          case "item":
+            let item = JSONClone(assets.items[newObjectId]);
+
+            if (item.scalable) {
+              if (item.affected === "hp") {
+                item.effect = Math.floor(player.hp * (0.40 + Math.random() * 0.2));
+              }
+            }
+
+            tile.object = item;
+            tile.object.dialogueId = dialogueId;
+
+            break;
+          case "enemy":
+            let enemy = JSONClone(assets.enemies[newObjectId]);
+
+            if (enemy.scalable) {
+              let level = player.level + enemy.level;
+
+              if (level < 1) {
+                level = 1;
+              }
+
+              enemy.hp = Math.floor(11.552 * level + 9.00);
+              enemy.attack = Math.floor(0.327 * level + 10);
+              enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * level));
+            }
+
+            tile.object = enemy;
+            tile.object.dialogueId = dialogueId;
+
+            console.log(enemy);
+
+            break;
+          case "npc":
+            tile.object = JSONClone(assets.npcs[newObjectId]);
+            tile.object.dialogueId = dialogueId;
+
+            break;
+          // This is technically "cheating" because it's not exactly adding an object to the tile
+          case "exit":
+            tile.terrain = 99;
+
+            break;
+          default:
+            break;
         }
-        else if (typeof newObject === "string" && allClear) {
-          switch(newObject) {
-            case "item":
-              tile.object = JSONClone(assets.items[newObjectId]);
-              tile.object.dialogueId = dialogueId;
-              break;
-            case "enemy":
-              let elll = 1;
-              let enemy = JSONClone(assets.enemies[newObjectId]);
 
-              enemy.hp = Math.floor(11.552 * elll + 9.00);
-              enemy.attack = Math.floor(0.327 * elll + 10);
-              enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * elll))
-
-              tile.object = enemy;
-              tile.object.dialogueId = dialogueId;
-              break;
-            case "npc":
-              tile.object = JSONClone(assets.npcs[newObjectId]);
-              tile.object.dialogueId = dialogueId;
-              break;
-            // This is technically "cheating" because it's not exactly adding an object to the tile
-            case "exit":
-              tile.terrain = 99;
-              break;
-            default:
-              break;
-          }
-
-          tileNotFound = false;
-        }
+        tileNotFound = false;
       }
     }
   }
@@ -410,13 +429,15 @@ export function placeObject(map, newObject, newObjectId, count = 1, coor = [], d
 
 
 
-function handleTrigger(map, trigger) {
+function handleTrigger(map, stage, player, trigger) {
   switch(trigger.type) {
     case "placeObject":
-      placeObject(map, trigger.objectType, trigger.objectid, trigger.objectAmount, trigger.coordinates, trigger.dialogueId);
+      placeObject(map, stage, player, trigger.objectType, trigger.objectid, trigger.objectAmount, trigger.coordinates, trigger.dialogueId);
+
       break;
     case "changeDialogue":
       changeDialogue(map, trigger.dialogueId, trigger.objectid, trigger.coordinates);
+
       break;
     default:
       break;
@@ -439,7 +460,7 @@ function updatePlayerStats(player) {
 
 
 
-export function handleDialogue(map, flags, dialogue, object) {
+export function handleDialogue(map, stage, player, flags, dialogue, object) {
   if (object !== undefined || dialogue.object !== null) {
     let dialogueSet = null;
 
@@ -471,7 +492,7 @@ export function handleDialogue(map, flags, dialogue, object) {
 
       if (triggers.length !== 0) {
         triggers.forEach((trigger) => {
-          handleTrigger(map, trigger);
+          handleTrigger(map, stage, player, trigger);
         })
       }
 
@@ -492,7 +513,7 @@ export function handleDialogue(map, flags, dialogue, object) {
 
 
 
-export function handleUserInput(key, map, player, flags, dialogue) {
+export function handleUserInput(key, map, stage, player, flags, dialogue) {
   let playerNextY = 0;
   let playerNextX = 0;
 
@@ -502,24 +523,28 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     case 65:
       playerNextY = player.y;
       playerNextX = player.x - 1;
+
       break;
     // Up key or W key
     case 38:
     case 87:
       playerNextY = player.y - 1;
       playerNextX = player.x;
+
       break;
     // Right key
     case 39:
     case 68:
       playerNextY = player.y;
       playerNextX = player.x + 1;
+
       break;
     // Down Key
     case 40:
     case 83:
       playerNextY = player.y + 1;
       playerNextX = player.x;
+
       break;
   }
 
@@ -585,9 +610,9 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       let enemy = nextTile.object;
 
       // Decrease player HP
-      player.hp = player.hp - enemy.attack;
+      player.hp = player.hp - Math.floor(enemy.attack * (0.85 + 0.15 * Math.random()));
       // Decrease enemy HP
-      enemy.hp = enemy.hp - player.attack;
+      enemy.hp = enemy.hp - Math.floor(player.attack * (0.85 + 0.15 * Math.random()));
 
       // Player death is handled by GameController.js
 
@@ -597,7 +622,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
         updatePlayerStats(player);
 
         if (enemy.dialogueId !== null) {
-          handleDialogue(map, flags, dialogue, enemy);
+          handleDialogue(map, stage, player, flags, dialogue, enemy);
         }
 
         clearObject = true;
@@ -608,7 +633,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       let npc = nextTile.object;
 
       if (npc.dialogueId !== null) {
-        handleDialogue(map, flags, dialogue, npc);
+        handleDialogue(map, stage, player, flags, dialogue, npc);
       }
     }
 
@@ -620,7 +645,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
       player.x = playerNextX;
 
       if (postMovementDialogue) {
-        handleDialogue(map, flags, dialogue, nextTile.object);
+        handleDialogue(map, stage, player, flags, dialogue, nextTile.object);
       }
     }
 
@@ -638,7 +663,7 @@ export function handleUserInput(key, map, player, flags, dialogue) {
     let movementKeys = [37, 38, 39, 40, 65, 68, 83, 87];
 
     if (movementKeys.indexOf(key) === -1) {
-      handleDialogue(map, flags, dialogue);
+      handleDialogue(map, stage, player, flags, dialogue);
     }
   }
   else if (nextTile.terrain === 99) {
@@ -650,27 +675,31 @@ export function handleUserInput(key, map, player, flags, dialogue) {
 
 export function decorateMap(map, stage, player, flags, dialogue) {
   if (stage === 0) {
-    placeObject(map, player, "player", 1, [7, 7]);
-    placeObject(map, "npc", "9001", 1, [5, 7], 3001);
+    placeObject(map, stage, player, "player", player.id, 1, [7, 7]);
+    placeObject(map, stage, player, "npc", "9001", 1, [5, 7], 3001);
   }
-  else if (stage === 1) {
-    player.weapon = "Caliburn Replica";
-    player.weaponId = 901;
-    player.weaponAttack = 9;
+  else if (stage === 4) {
 
-    updatePlayerStats(player);
-
-    placeObject(map, player, player.id);
-    placeObject(map, "item", "101", 10);
-    placeObject(map, "enemy", "1101", 10);
-    placeObject(map, "item", "999");
-    placeObject(map, "exit");
   }
   else {
-    placeObject(map, player, player.id);
-    placeObject(map, "item", "101", 10);
-    placeObject(map, "enemy", "1101", 10);
-    placeObject(map, "item", "999");
-    placeObject(map, "exit");
+    if (stage === 1) {
+      player.weapon = "Caliburn Replica";
+      player.weaponId = 701;
+      player.weaponAttack = 9;
+
+      updatePlayerStats(player);
+    }
+
+    placeObject(map, stage, player, "player", player.id);
+    placeObject(map, stage, player, "item", "101", 30);
+
+    placeObject(map, stage, player, "enemy", "1101", 5);
+    placeObject(map, stage, player, "enemy", "1102", 10);
+    placeObject(map, stage, player, "enemy", "1103", 15);
+    placeObject(map, stage, player, "enemy", "1104", 10);
+    placeObject(map, stage, player, "enemy", "1105", 5);
+
+    placeObject(map, stage, player, "item", "990");
+    placeObject(map, stage, player, "exit");
   }
 }

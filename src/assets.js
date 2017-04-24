@@ -4,32 +4,45 @@ export const items = {
     "id": 101,
     "name": "Crystal of Clarity",
     "type": "Healing",
+    "scalable": true,
     "affected": "hp",
-    "effect": +20,
+    "effect": null,
+    "dialogueId": null
+  },
+  "701": {
+    "id": 701,
+    "name": "Caliburn Replica",
+    "type": "Weapon",
+    "scalable": false,
+    "affected": "attack",
+    "effect": +9,
     "dialogueId": null
   },
   "901": {
     "id": 901,
-    "name": "Caliburn Replica",
-    "type": "Weapon",
-    "affected": "attack",
-    "effect": 10,
+    "name": "Crystal of Clarity",
+    "type": "Healing",
+    "scalable": false,
+    "affected": "hp",
+    "effect": +50,
     "dialogueId": null
   },
   "990": {
     "id": 990,
     "name": "Excalibur",
     "type": "Weapon",
+    "scalable": false,
     "affected": "attack",
-    "effect": 99,
+    "effect": +100,
     "dialogueId": null
   },
   "999": {
     "id": 999,
     "name": "Caliburn",
     "type": "Weapon",
+    "scalable": false,
     "affected": "attack",
-    "effect": 9998,
+    "effect": +9998,
     "dialogueId": null
   }
 }
@@ -40,10 +53,12 @@ export const enemies = {
     "id": 1001,
     "name": "Crystal of Shadow",
     "type": "Enemy",
-    "level": null,
-    "mhp": null,
-    "hp": null,
-    "attack": null,
+    "scalable": false,
+    "level": 1,
+    "mhp": 20,
+    "hp": 20,
+    "attack": 10,
+    "xp": 36,
     "loot": [],
     "dialogueId": null
   },
@@ -51,10 +66,64 @@ export const enemies = {
     "id": 1101,
     "name": "Crystal of Shadow",
     "type": "Enemy",
-    "level": null,
+    "scalable": true,
+    "level": -2,
     "mhp": null,
     "hp": null,
     "attack": null,
+    "xp": null,
+    "loot": [],
+    "dialogueId": null
+  },
+  "1102": {
+    "id": 1102,
+    "name": "Crystal of Shadow",
+    "type": "Enemy",
+    "scalable": true,
+    "level": -1,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "xp": null,
+    "loot": [],
+    "dialogueId": null
+  },
+  "1103": {
+    "id": 1103,
+    "name": "Crystal of Shadow",
+    "type": "Enemy",
+    "scalable": true,
+    "level": 0,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "xp": null,
+    "loot": [],
+    "dialogueId": null
+  },
+  "1104": {
+    "id": 1104,
+    "name": "Crystal of Shadow",
+    "type": "Enemy",
+    "scalable": true,
+    "level": 1,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "xp": null,
+    "loot": [],
+    "dialogueId": null
+  },
+  "1105": {
+    "id": 1105,
+    "name": "Crystal of Shadow",
+    "type": "Enemy",
+    "scalable": true,
+    "level": 2,
+    "mhp": null,
+    "hp": null,
+    "attack": null,
+    "xp": null,
     "loot": [],
     "dialogueId": null
   }
@@ -220,7 +289,7 @@ export const dialogues = {
             "type": "placeObject",
             "coordinates": [5, 5],
             "objectType": "item",
-            "objectid": "101",
+            "objectid": "901",
             "objectAmount": 1,
             "dialogueId": 3006
           }
@@ -393,7 +462,7 @@ export const dialogues = {
       "9": {
         "character": "Alice",
         "characterId": 9001,
-        "text": "Just go to the exit to being your adventure! I will miss you, little Muup!",
+        "text": "Just go to the exit to begin your adventure! I will miss you, little Muup!",
         "triggers": [
           {
             "type": "changeDialogue",
@@ -404,7 +473,7 @@ export const dialogues = {
           },
           {
             "type": "placeObject",
-            "coordinates": [13, 7],
+            "coordinates": [12, 7],
             "objectType": "exit",
             "objectid": null,
             "objectAmount": 1,

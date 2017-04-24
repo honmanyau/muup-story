@@ -40,7 +40,7 @@
 }
 
 [data-terrain="99"] {
-  background-color: #CCC;
+  background-color: purple;
 }
 
 /*  Items and NPCs:
@@ -51,12 +51,44 @@
   background-color: pink;
 }
 
+[data-objectid="901"] {
+  background-color: pink;
+}
+
+[data-objectid="701"] {
+  background-color: gold;
+}
+
+[data-objectid="990"] {
+  background-color: gold;
+}
+
 [data-objectid="999"] {
   background-color: gold;
 }
 
 [data-objectid="1001"] {
   background-color: black;
+}
+
+[data-objectid="1101"] {
+  background-color: #CCC;
+}
+
+[data-objectid="1102"] {
+  background-color: #999;
+}
+
+[data-objectid="1103"] {
+  background-color: #666;
+}
+
+[data-objectid="1104"] {
+  background-color: #333;
+}
+
+[data-objectid="1105"] {
+  background-color: #000;
 }
 
 [data-objectid="9001"] {
