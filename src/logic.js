@@ -579,7 +579,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
 
   let curTile = map[player.y][player.x];
   let nextTile = map[playerNextY][playerNextX];
-  let postMovementDialogue = false;
+  let triggerDialogue = false;
 
   // If the tile is potentially traversable
   if (nextTile.terrain === 2 && flags.inDialogue === false) {
@@ -628,7 +628,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
       }
 
       if (item.dialogueid !== null) {
-        postMovementDialogue = true;
+        triggerDialogue = true;
       }
 
       clearObject = true;
@@ -651,7 +651,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
         updatePlayerStats(player);
 
         if (enemy.dialogueid !== null) {
-          handleDialogue(map, stage, player, flags, dialogue, enemy);
+          triggerDialogue = true;
         }
 
         clearObject = true;
@@ -662,7 +662,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
       let npc = nextTile.object;
 
       if (npc.dialogueid !== null) {
-        handleDialogue(map, stage, player, flags, dialogue, npc);
+        triggerDialogue = true;
       }
     }
 
@@ -672,11 +672,10 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
       nextTile.player = "true";
       player.y = playerNextY;
       player.x = playerNextX;
+    }
 
-      // Move this
-      if (postMovementDialogue) {
-        handleDialogue(map, stage, player, flags, dialogue, nextTile.object);
-      }
+    if (triggerDialogue) {
+      handleDialogue(map, stage, player, flags, dialogue, nextTile.object);
     }
 
     // Clear the tile of the pervious object

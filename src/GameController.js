@@ -34,7 +34,7 @@ class GameController extends React.Component {
 
     this.state = {
       map: [],
-      stage: 5,
+      stage: 0,
       player: initialPlayer,
       inDialogue: false,
       dialogue: initialDialogue
