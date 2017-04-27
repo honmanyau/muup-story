@@ -180,7 +180,6 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
-        <TestPanel player={player} floor={this.state.floor} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
           <InfoPanel player={player} floor={this.state.floor} />
           <PMap map={this.state.map} style={pMapOffsetStyles} />

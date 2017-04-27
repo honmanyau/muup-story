@@ -5,8 +5,16 @@ class TestPanel extends React.Component {
   render() {
     let player = this.props.player;
 
+    const testPanelStyles = {
+      gridArea: "3 / 2 / 3 / span 3",
+      padding: "0 10px",
+      textAlign: "center",
+      backgroundColor: "none",
+      border: "2px dashed #AAA"
+    };
+
     return(
-      <div className="GameController-testPanel">
+      <div className="GameController-testPanel" style={testPanelStyles}>
         <h2>Game Info</h2>
         <span><strong>Floor:</strong> {this.props.floor}</span>&nbsp;&nbsp;
         <span><strong>X:</strong> {player.x}</span>&nbsp;&nbsp;

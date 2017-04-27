@@ -52,7 +52,7 @@
 }
 
 [data-terrain="1"] {
-  background-color: crimson;
+  background-color: #444;
 }
 
 [data-terrain="2"] {
@@ -64,8 +64,9 @@
 }
 
 /*  Items and NPCs:
-    100 = Healing Crystal
-    901 = Caliburn Replica
+    100 = Crystal of Clairy
+    901 = Crystal of Clairy
+    701 = Caliburn Replica
     990 = Excalibur
     999 = Alice's Caliburn
 */
@@ -74,7 +75,7 @@
 }
 
 [data-objectid="901"] {
-  background-color: gold;
+  background-color: pink;
 }
 
 [data-objectid="701"] {
