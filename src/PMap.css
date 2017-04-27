@@ -1,0 +1,125 @@
+:root {
+  --tile-size: 40px;
+  --tile-border: 1px solid white;
+}
+
+.Map {
+  position: absolute;
+  transform: rotateX(54.7deg) rotateZ(45deg);
+}
+
+.Map-tileWrapper {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--tile-size);
+  width: var(--tile-size);
+  border-right: var(--tile-border);
+  border-bottom: var(--tile-border);
+}
+
+.Map-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.Map-tileObject {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transform: rotateZ(-45deg) scaleY(1.731) translateY(-20px);
+  box-shadow: 0px 4px 4px #666;
+}
+
+.Map-row {
+  height: var(--tile-size);
+  line-height: 0;
+}
+
+/*  Terrains:
+    0 = nothing
+    1 = margins used for map generation and visualisation, it's meant to be functionally the same as 0
+    2 = regular
+    99 = exit
+*/
+[data-terrain="0"] {
+  background-color: #444;
+}
+
+[data-terrain="1"] {
+  background-color: crimson;
+}
+
+[data-terrain="2"] {
+  background-color: paleGreen;
+}
+
+[data-terrain="99"] {
+  background-color: purple;
+}
+
+/*  Items and NPCs:
+    100 = Healing Crystal
+    999 = Excalibur
+*/
+[data-objectid="101"] {
+  background-color: pink;
+}
+
+[data-objectid="901"] {
+  background-color: pink;
+}
+
+[data-objectid="701"] {
+  background-color: gold;
+}
+
+[data-objectid="990"] {
+  background-color: gold;
+}
+
+[data-objectid="999"] {
+  background-color: gold;
+}
+
+[data-objectid="1001"] {
+  background-color: black;
+}
+
+[data-objectid="1101"] {
+  background-color: #CCC;
+}
+
+[data-objectid="1102"] {
+  background-color: #999;
+}
+
+[data-objectid="1103"] {
+  background-color: #666;
+}
+
+[data-objectid="1104"] {
+  background-color: #333;
+}
+
+[data-objectid="1105"] {
+  background-color: #000;
+}
+
+[data-objectid="1199"] {
+  background-color: turquoise;
+}
+
+[data-objectid="9001"] {
+  background-color: salmon;
+}
+
+/* Player styling */
+[data-player="true"] {
+  background-color: royalBlue;
+}

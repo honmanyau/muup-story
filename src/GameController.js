@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import './GameController.css'
 import DialogueBox from './DialogueBox'
 import InfoPanel from './InfoPanel.js'
-import Map from './Map.js'
+// import Map from './Map.js'
+import PMap from './PMap.js'
 import * as logic from './logic.js'
 import * as assets from './assets.js'
 
@@ -141,14 +142,31 @@ class GameController extends React.Component {
   render() {
     let player = JSON.parse(JSON.stringify(this.state.player));
     let tileSize = this.tileSize;
+    let mapSize = this.mapSize;
+    let unscaledDiagonal = Math.sqrt(2 * Math.pow(tileSize, 2));
+    let mapCenterOffset = (this.levelWrapperSize - mapSize) * tileSize / 2;
+    let playerYOffset = ((player.y + player.x) - (mapSize - 1)) / 2 * unscaledDiagonal * Math.cos(54.7 * Math.PI / 180);
+    let playerXOffset = ((mapSize - 1) / 2 - player.y + player.x - (mapSize - 1) / 2) / 2 * unscaledDiagonal;
+
+    /* Non-perspective version
+    // These ensure that the player is always in focus and at the middle of the levelWrapper
     let wrapperCenter = this.levelWrapperSize * tileSize / 2;
     let tileOffset = tileSize / 2;
-    // These ensure that the player is always in focus and at the middle of the levelWrapper
+
     let mapOffsetStyles = {
       height: this.mapSize * tileSize,
       width: this.mapSize * tileSize,
       top: wrapperCenter - player.y * tileSize - tileOffset,
       left: wrapperCenter - player.x * tileSize - tileOffset
+    }
+    */
+
+    // These ensure that the player is always in focus and at the middle of the levelWrapper
+    let pMapOffsetStyles = {
+      height: mapSize * tileSize,
+      width: mapSize * tileSize,
+      top: mapCenterOffset - playerYOffset,
+      left: mapCenterOffset - playerXOffset
     }
     // This allows the size of the playing field to be modified by changing this.mapSize and this.tileSize
     let levelWrapperStyles = {
@@ -160,7 +178,7 @@ class GameController extends React.Component {
       <div className="GameController-gameContainer">
         <InfoPanel player={player} stage={this.state.stage} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
-          <Map map={this.state.map} style={mapOffsetStyles} />
+          <PMap map={this.state.map} style={pMapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
         </div>
         <DialogueBox dialogue={this.state.dialogue} />
