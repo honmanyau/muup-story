@@ -38,7 +38,7 @@ export const items = {
   },
   "999": {
     "id": 999,
-    "name": "Caliburn",
+    "name": "Alice's Caliburn",
     "type": "Weapon",
     "scalable": false,
     "affected": "attack",
@@ -305,6 +305,13 @@ export const dialogues = {
             "objectid": "901",
             "objectamount": 1,
             "dialogueid": 3006
+          },
+          {
+            "type": "changeDialogue",
+            "coordinates": [5, 7],
+            "objecttype": "npc",
+            "objectid": "9001",
+            "dialogueid": 3005
           }
         ]
       },

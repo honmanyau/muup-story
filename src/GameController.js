@@ -70,6 +70,8 @@ class GameController extends React.Component {
 
     this.tileSize = 40;
     this.levelWrapperSize = 12;
+    this.levelWrapperY = 12;
+    this.levelWrapperX = 18;
 
     this.mapSize = 30;
     this.minRoomSize = 8;
@@ -79,7 +81,7 @@ class GameController extends React.Component {
     this.corridorAmountBias = 0.3;
 
     if (floor === 0 || floor === 5) {
-      // Can be tidied up here
+      // Can be tidied up here, revisit once dimension-related changes are settled
       this.mapSize = 15;
       this.minRoomSize = 15;
       this.maxRoomSize = 16;
@@ -142,8 +144,10 @@ class GameController extends React.Component {
     let player = JSON.parse(JSON.stringify(this.state.player));
     let tileSize = this.tileSize;
     let mapSize = this.mapSize;
+
     let unscaledDiagonal = Math.sqrt(2 * Math.pow(tileSize, 2));
-    let mapCenterOffset = (this.levelWrapperSize - mapSize) * tileSize / 2;
+    let mapCenterOffsetY = (this.levelWrapperY - mapSize) * tileSize / 2;
+    let mapCenterOffsetX = (this.levelWrapperX - mapSize) * tileSize / 2;
     let playerYOffset = ((player.y + player.x) - (mapSize - 1)) / 2 * unscaledDiagonal * Math.cos(54.7 * Math.PI / 180);
     let playerXOffset = ((mapSize - 1) / 2 - player.y + player.x - (mapSize - 1) / 2) / 2 * unscaledDiagonal;
 
@@ -165,13 +169,13 @@ class GameController extends React.Component {
     let pMapOffsetStyles = {
       height: mapSize * tileSize,
       width: mapSize * tileSize,
-      top: mapCenterOffset - playerYOffset,
-      left: mapCenterOffset - playerXOffset
+      top: mapCenterOffsetY - playerYOffset,
+      left: mapCenterOffsetX - playerXOffset
     }
     // This allows the size of the playing field to be modified by changing this.mapSize and this.tileSize
     let levelWrapperStyles = {
-      height: this.levelWrapperSize * tileSize,
-      width: this.levelWrapperSize * tileSize
+      height: this.levelWrapperY * tileSize,
+      width: this.levelWrapperX * tileSize
     }
 
     return (

@@ -65,14 +65,16 @@
 
 /*  Items and NPCs:
     100 = Healing Crystal
-    999 = Excalibur
+    901 = Caliburn Replica
+    990 = Excalibur
+    999 = Alice's Caliburn
 */
 [data-objectid="101"] {
   background-color: pink;
 }
 
 [data-objectid="901"] {
-  background-color: pink;
+  background-color: gold;
 }
 
 [data-objectid="701"] {
