@@ -147,7 +147,8 @@ class GameController extends React.Component {
     let playerYOffset = ((player.y + player.x) - (mapSize - 1)) / 2 * unscaledDiagonal * Math.cos(54.7 * Math.PI / 180);
     let playerXOffset = ((mapSize - 1) / 2 - player.y + player.x - (mapSize - 1) / 2) / 2 * unscaledDiagonal;
 
-    /* Non-perspective version
+    /*
+    //Non-perspective version—reserved for testing.  Must use Map.js instead of PMap.js.  Change the variable of styles for the map component accordingly.
     // These ensure that the player is always in focus and at the middle of the levelWrapper
     let wrapperCenter = this.levelWrapperSize * tileSize / 2;
     let tileOffset = tileSize / 2;
