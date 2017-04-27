@@ -340,7 +340,7 @@ export function removeDialogue(map, dialogueid, objectId, objectCoor = []) {
 
 
 
-export function placeObject(map, stage, player, newObjectType, newObjectId, count = 1, coor = [], dialogueid = null) {
+export function placeObject(map, floor, player, newObjectType, newObjectId, count = 1, coor = [], dialogueid = null) {
   let mapSize = map.length;
 
   for (let i = 0; i < count; i++) {
@@ -458,10 +458,10 @@ export function placeObject(map, stage, player, newObjectType, newObjectId, coun
 
 
 
-function handleTrigger(map, stage, player, trigger) {
+function handleTrigger(map, floor, player, trigger) {
   switch(trigger.type) {
     case "placeObject":
-      placeObject(map, stage, player, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates, trigger.dialogueid);
+      placeObject(map, floor, player, trigger.objecttype, trigger.objectid, trigger.objectamount, trigger.coordinates, trigger.dialogueid);
 
       break;
     case "changeDialogue":
@@ -489,7 +489,7 @@ function updatePlayerStats(player) {
 
 
 
-export function handleDialogue(map, stage, player, flags, dialogue, object) {
+export function handleDialogue(map, floor, player, flags, dialogue, object) {
   if (object !== undefined || dialogue.object !== null) {
     let dialogueSet = null;
 
@@ -521,7 +521,7 @@ export function handleDialogue(map, stage, player, flags, dialogue, object) {
 
       if (triggers.length !== 0) {
         triggers.forEach((trigger) => {
-          handleTrigger(map, stage, player, trigger);
+          handleTrigger(map, floor, player, trigger);
         })
       }
 
@@ -542,7 +542,7 @@ export function handleDialogue(map, stage, player, flags, dialogue, object) {
 
 
 
-export function handleUserInput(key, map, stage, player, flags, dialogue) {
+export function handleUserInput(key, map, floor, player, flags, dialogue) {
   let playerNextY = 0;
   let playerNextX = 0;
 
@@ -675,7 +675,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
     }
 
     if (triggerDialogue) {
-      handleDialogue(map, stage, player, flags, dialogue, nextTile.object);
+      handleDialogue(map, floor, player, flags, dialogue, nextTile.object);
     }
 
     // Clear the tile of the pervious object
@@ -692,7 +692,7 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
     let movementKeys = [37, 38, 39, 40, 65, 68, 83, 87];
 
     if (movementKeys.indexOf(key) === -1) {
-      handleDialogue(map, stage, player, flags, dialogue);
+      handleDialogue(map, floor, player, flags, dialogue);
     }
   }
   else if (nextTile.terrain === 99) {
@@ -702,19 +702,19 @@ export function handleUserInput(key, map, stage, player, flags, dialogue) {
 
 
 
-export function decorateMap(map, stage, player, flags, dialogue) {
-  if (stage === 0) {
-    placeObject(map, stage, player, "player", player.id, 1, [7, 7]);
-    placeObject(map, stage, player, "npc", "9001", 1, [5, 7], 3001);
+export function decorateMap(map, floor, player, flags, dialogue) {
+  if (floor === 0) {
+    placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
+    placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3001);
   }
-  else if (stage === 5) {
-    placeObject(map, stage, player, "player", player.id, 1, [7, 7]);
-    placeObject(map, stage, player, "enemy", "1199", 1);
-    placeObject(map, stage, player, "item", "990", 1);
-    placeObject(map, stage, player, "item", "101", 10);
+  else if (floor === 5) {
+    placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
+    placeObject(map, floor, player, "enemy", "1199", 1);
+    placeObject(map, floor, player, "item", "990", 1);
+    placeObject(map, floor, player, "item", "101", 10);
   }
   else {
-    if (stage === 1) {
+    if (floor === 1) {
       player.weapon = "Caliburn Replica";
       player.weaponId = 701;
       player.weaponAttack = 9;
@@ -722,16 +722,16 @@ export function decorateMap(map, stage, player, flags, dialogue) {
       updatePlayerStats(player);
     }
 
-    placeObject(map, stage, player, "player", player.id);
-    placeObject(map, stage, player, "item", "101", 30);
-    placeObject(map, stage, player, "item", "990");
+    placeObject(map, floor, player, "player", player.id);
+    placeObject(map, floor, player, "item", "101", 30);
+    placeObject(map, floor, player, "item", "990");
 
-    placeObject(map, stage, player, "enemy", "1101", 5);
-    placeObject(map, stage, player, "enemy", "1102", 10);
-    placeObject(map, stage, player, "enemy", "1103", 15);
-    placeObject(map, stage, player, "enemy", "1104", 10);
-    placeObject(map, stage, player, "enemy", "1105", 5);
+    placeObject(map, floor, player, "enemy", "1101", 5);
+    placeObject(map, floor, player, "enemy", "1102", 10);
+    placeObject(map, floor, player, "enemy", "1103", 15);
+    placeObject(map, floor, player, "enemy", "1104", 10);
+    placeObject(map, floor, player, "enemy", "1105", 5);
 
-    placeObject(map, stage, player, "exit");
+    placeObject(map, floor, player, "exit");
   }
 }

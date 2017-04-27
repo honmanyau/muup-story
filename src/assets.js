@@ -433,7 +433,7 @@ export const dialogues = {
       "2": {
         "character": "Muup",
         "characterid": "player",
-        "text": "Wait... what!?",
+        "text": "Wait... what!? You can't do that to me!",
         "triggers": []
       },
       "3": {
@@ -486,7 +486,7 @@ export const dialogues = {
           },
           {
             "type": "placeObject",
-            "coordinates": [12, 7],
+            "coordinates": [12, 12],
             "objecttype": "exit",
             "objectid": null,
             "objectamount": 1,

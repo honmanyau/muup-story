@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './GameController.css'
 import DialogueBox from './DialogueBox'
+import TestPanel from './TestPanel.js'
 import InfoPanel from './InfoPanel.js'
 // import Map from './Map.js'
 import PMap from './PMap.js'
@@ -35,7 +36,7 @@ class GameController extends React.Component {
 
     this.state = {
       map: [],
-      stage: 0,
+      floor: 0,
       player: initialPlayer,
       inDialogue: false,
       dialogue: initialDialogue
@@ -54,11 +55,10 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    //this.generateNewlevel(this.state.stage);
-    this.generateNewlevel(this.state.stage);
+    this.generateNewlevel(this.state.floor);
   }
 
-  generateNewlevel(stage) {
+  generateNewlevel(floor) {
     let map = [];
     let playerPosition = {};
     let player = JSON.parse(JSON.stringify(this.state.player));
@@ -69,17 +69,16 @@ class GameController extends React.Component {
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
     this.tileSize = 40;
-    this.levelWrapperSize = 14;
+    this.levelWrapperSize = 12;
+
     this.mapSize = 30;
-    this.minRoomSize = 7;
+    this.minRoomSize = 8;
     this.maxRoomSize = 12;
     this.staticMargin = 0;
-    this.marginVariability = 4;
-    // Number between 0 (inclusive) to 1 (exclusive) that determines the probability of whether or not a room can
-    // have more than two unique corridors
+    this.marginVariability = 3;
     this.corridorAmountBias = 0.3;
 
-    if (stage === 0 || stage === 5) {
+    if (floor === 0 || floor === 5) {
       // Can be tidied up here
       this.mapSize = 15;
       this.minRoomSize = 15;
@@ -89,11 +88,11 @@ class GameController extends React.Component {
       this.corridorAmountBias = 0;
 
       logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      logic.decorateMap(map, stage, player, flags, dialogue);
+      logic.decorateMap(map, floor, player, flags, dialogue);
     }
     else {
       logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      logic.decorateMap(map, stage, player, flags, dialogue);
+      logic.decorateMap(map, floor, player, flags, dialogue);
     }
 
     this.setState({
@@ -106,7 +105,7 @@ class GameController extends React.Component {
 
   handleUserInput(event) {
     let map = this.state.map.slice(0);
-    let stage = this.state.stage;
+    let floor = this.state.floor;
     let key = event.which || event.keyCode;
     let player = JSON.parse(JSON.stringify(this.state.player));
     let flags = {
@@ -115,16 +114,16 @@ class GameController extends React.Component {
     };
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
-    logic.handleUserInput(key, map, stage, player, flags, dialogue);
+    logic.handleUserInput(key, map, floor, player, flags, dialogue);
 
     if (flags.changeLevel) {
-      let nextStage = this.state.stage + 1;
+      let nextFloor = this.state.floor + 1;
 
       this.setState({
-        stage: nextStage,
+        floor: nextFloor,
       });
 
-      this.generateNewlevel(nextStage);
+      this.generateNewlevel(nextFloor);
     }
     else if (player.hp < 1) {
       this.generateNewlevel(0);
@@ -176,12 +175,13 @@ class GameController extends React.Component {
 
     return (
       <div className="GameController-gameContainer">
-        <InfoPanel player={player} stage={this.state.stage} />
+        <TestPanel player={player} floor={this.state.floor} />
         <div className="GameController-levelWrapper" style={levelWrapperStyles}>
+          <InfoPanel player={player} floor={this.state.floor} />
           <PMap map={this.state.map} style={pMapOffsetStyles} />
           <div className="GameController-fog" style={levelWrapperStyles}></div>
+          <DialogueBox dialogue={this.state.dialogue} />
         </div>
-        <DialogueBox dialogue={this.state.dialogue} />
       </div>
     );
   }
