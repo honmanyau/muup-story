@@ -25,10 +25,11 @@
 
 .GameController-infoPanel {
   z-index: 10;
-  margin-top: 4%;
+  margin-top: 3%;
 }
 
 .GameController-infoPanelLabel {
+  vertical-align: top;
   display: inline-block;
   margin: 0 0.8rem;
   font-size: 2em;
@@ -38,6 +39,11 @@
 
 .GameController-infoPanelLabel > small {
   font-size: 0.6em;
+}
+
+.GameController-extraSmallText {
+  margin: 0;
+  font-size: 0.4em;
 }
 
 .GameController-infoPanelLabel-HPBar {
@@ -59,7 +65,7 @@
   display: inline-block;
   margin: 0 auto 18% auto;
   padding: 0 1rem;
-  box-sizing: border-box;;
+  box-sizing: border-box;
   border: 1px solid #555;
   border-radius: 5px;
   background: white;

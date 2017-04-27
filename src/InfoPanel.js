@@ -20,7 +20,10 @@ class InfoPanel extends React.Component {
             <div className="GameController-infoPanelLabel-HPBarFill" style={HPBarFillWidth}></div>
           </div>
         </div>
-        <div className="GameController-infoPanelLabel"><small>&#9876;</small>{player.attack}</div>
+        <div className="GameController-infoPanelLabel">
+          <small>&#9876;</small>{player.attack}
+          <div className="GameController-extraSmallText">Enhanced Excalibur</div>
+        </div>
       </div>
     );
   }
