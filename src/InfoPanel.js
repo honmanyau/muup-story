@@ -21,7 +21,7 @@ class InfoPanel extends React.Component {
           </div>
         </div>
         <div className="GameController-infoPanelLabel">
-          <small>&#9876;</small>{player.attack}
+          <small>&#10052;</small>{player.attack}
           <div className="GameController-extraSmallText">{player.weapon}</div>
         </div>
       </div>

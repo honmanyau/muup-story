@@ -10,6 +10,7 @@
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between; /* This is used for positioning the dialogue box and the player stats/game info at the top */
+  align-items: center;
   margin: 0 auto;
   overflow: hidden;
   border: 2px dashed #AAA;
@@ -18,7 +19,13 @@
 
 .GameController-infoPanel {
   z-index: 10;
-  margin-top: 3%;
+  width: 24rem;
+  margin-top: 0.5rem;
+  padding: 0.2rem;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 4px #CCC;
 }
 
 .GameController-infoPanelLabel {
@@ -27,7 +34,8 @@
   margin: 0 0.8rem;
   font-size: 2em;
   font-weight: 900;
-  text-shadow: 0px 0px 4px white;
+  color: white;
+  text-shadow: 0px 0px 3px #333;
 }
 
 .GameController-infoPanelLabel > small {
@@ -37,14 +45,15 @@
 .GameController-extraSmallText {
   margin: 0;
   font-size: 0.4em;
+  line-height: 1em;
 }
 
 .GameController-infoPanelLabel-HPBar {
   width: 100%;
   height: 0.5rem;
-  border: 1px solid #333;
+  border: 1px solid #CCC;
   border-radius: 4px;
-  box-shadow: 0px 0px 2px white;
+  box-shadow: 0px 0px 4px black;
 }
 
 .GameController-infoPanelLabel-HPBarFill {
@@ -55,14 +64,13 @@
 .GameController-dialogueBox {
   z-index: 10;
   width: 26rem;
-  display: inline-block;
-  margin: 0 auto 18% auto;
+  margin-bottom: 16%;
   padding: 0 1rem;
   box-sizing: border-box;
   border: 1px solid #777;
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.75);
-  box-shadow: 0px 0px 5px #555;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0px 0px 4px #555;
 }
 
 .GameController-dialogueBoxDark {
