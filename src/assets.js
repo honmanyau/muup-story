@@ -9,13 +9,49 @@ export const items = {
     "effect": null,
     "dialogueid": null
   },
-  "701": {
-    "id": 701,
+  "700": {
+    "id": 700,
     "name": "Caliburn Replica",
     "type": "Weapon",
     "scalable": false,
     "affected": "attack",
     "effect": +9,
+    "dialogueid": null
+  },
+  "701": {
+    "id": 701,
+    "name": "Staff of Persephone",
+    "type": "Weapon",
+    "scalable": false,
+    "affected": "attack",
+    "effect": +12,
+    "dialogueid": null
+  },
+  "702": {
+    "id": 702,
+    "name": "Rapier of Áine",
+    "type": "Weapon",
+    "scalable": false,
+    "affected": "attack",
+    "effect": +14,
+    "dialogueid": null
+  },
+  "703": {
+    "id": 703,
+    "name": "Scythe of Ceres",
+    "type": "Weapon",
+    "scalable": false,
+    "affected": "attack",
+    "effect": +16,
+    "dialogueid": null
+  },
+  "704": {
+    "id": 704,
+    "name": "Spear of Skadi",
+    "type": "Weapon",
+    "scalable": false,
+    "affected": "attack",
+    "effect": +18,
     "dialogueid": null
   },
   "901": {

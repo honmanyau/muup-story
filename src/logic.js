@@ -418,15 +418,15 @@ export function placeObject(map, floor, player, newObjectType, newObjectId, coun
                 level = 1;
               }
 
-              enemy.hp = Math.floor(11.552 * level + 9.00);
-              enemy.attack = Math.floor(0.327 * level + 10);
-              enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * level));
+              enemy.hp = Math.floor(11.6 * level + 9);
+              enemy.attack = Math.floor(0.5 * level + 13);
+              enemy.xp = Math.floor(30 + 4 * Math.exp(0.19 * level));
             }
 
             if (enemy.type === "Boss") {
               enemy.hp = (player.level + 10) * 10 + 40;
               enemy.attack = enemy.level + Math.floor(player.level * 1.1);
-              enemy.xp = Math.floor(30.4 + 4.07 * Math.exp(0.19 * enemy.level)) * 5;
+              enemy.xp = Math.floor(30 + 4 * Math.exp(0.19 * enemy.level)) * 5;
             }
 
             if (dialogueid !== null) {
@@ -643,6 +643,8 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
       // Decrease enemy HP
       enemy.hp = enemy.hp - Math.floor(player.attack * (0.85 + 0.15 * Math.random()));
 
+      console.log(enemy)
+
       // Player death is handled by GameController.js in handleUserInput()
 
       // Handling enemy death
@@ -715,15 +717,16 @@ export function decorateMap(map, floor, player, flags, dialogue) {
     placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3001);
   }
   else if (floor === 5) {
-    placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
-    placeObject(map, floor, player, "enemy", "1199", 1);
-    placeObject(map, floor, player, "item", "990", 1);
-    placeObject(map, floor, player, "item", "101", 10);
+    placeObject(map, floor, player, "player", player.id, 1, [11, 11]);
+    placeObject(map, floor, player, "enemy", "1199", 1, [7, 7]);
+    placeObject(map, floor, player, "item", "101", 8);
   }
   else {
+    let spawnWeaponId = "70" + floor;
+
     if (floor === 1) {
       player.weapon = "Caliburn Replica";
-      player.weaponId = 701;
+      player.weaponId = 700;
       player.weaponAttack = 9;
 
       updatePlayerStats(player);
@@ -731,7 +734,7 @@ export function decorateMap(map, floor, player, flags, dialogue) {
 
     placeObject(map, floor, player, "player", player.id);
     placeObject(map, floor, player, "item", "101", 30);
-    placeObject(map, floor, player, "item", "990");
+    placeObject(map, floor, player, "item", spawnWeaponId);
 
     placeObject(map, floor, player, "enemy", "1101", 5);
     placeObject(map, floor, player, "enemy", "1102", 10);

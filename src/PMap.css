@@ -66,7 +66,7 @@
 /*  Items and NPCs:
     100 = Crystal of Clairy
     901 = Crystal of Clairy
-    701 = Caliburn Replica
+    700 = Caliburn Replica
     990 = Excalibur
     999 = Alice's Caliburn
 */
@@ -78,8 +78,24 @@
   background-color: pink;
 }
 
-[data-objectid="701"] {
+[data-objectid="700"] {
   background-color: gold;
+}
+
+[data-objectid="701"] {
+  background-color: springGreen;
+}
+
+[data-objectid="702"] {
+  background-color: moccasin;
+}
+
+[data-objectid="703"] {
+  background-color: tomato;
+}
+
+[data-objectid="704"] {
+  background-color: dodgerBlue;
 }
 
 [data-objectid="990"] {

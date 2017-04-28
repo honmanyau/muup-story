@@ -41,8 +41,9 @@ class GameController extends React.Component {
 
     this.state = {
       showStartScreen: true,
+      mode: null,
       map: [],
-      floor: 0,
+      floor: 1,
       player: initialPlayer,
       inDialogue: false,
       dialogue: initialDialogue
@@ -73,6 +74,7 @@ class GameController extends React.Component {
       case "story":
         this.setState({
           showStartScreen: false,
+          mode: "story"
         });
 
         this.generateNewlevel(this.state.floor);
