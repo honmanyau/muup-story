@@ -16,7 +16,7 @@ export function JSONClone(object) {
 
 
 
-export function generateMap(map, mapSize, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
+export function generateMap(map, mapSize, reserveEdge, minRoomSize, maxRoomSize, staticMargin, marginVariability, corridorAmountBias) {
   let roomList = [];
 
   // Function for generating the level as an array according to the sizes specified in GameController
@@ -25,17 +25,25 @@ export function generateMap(map, mapSize, minRoomSize, maxRoomSize, staticMargin
       let row = [];
 
       for (let x = 0; x < mapSize; x++) {
-        // [y, x, terrain, roomId, player]
+        let terrain = 0;
+
+        // Disallow allow traversable tiles at the edges, can be disabled in GameController.js with this.reserveEdge
+        if (reserveEdge) {
+          if (y === 0 || x === 0 || y === mapSize - 1 || x === mapSize -1) {
+            terrain = 1;
+          }
+        }
+
         row.push({
           y: y,
           x: x,
-          terrain: 0,
+          terrain: terrain,
           roomId: 0,
           player: "false",
           object: initialObject
         });
       }
-      // Once a row is filled, push it into the map array
+
       map.push(row);
     };
   }
@@ -44,7 +52,6 @@ export function generateMap(map, mapSize, minRoomSize, maxRoomSize, staticMargin
   function createRoom(size, originY, originX) {
     let margin = staticMargin + Math.floor(Math.random() * marginVariability);
     let curRoomId = roomList.length + 1;
-
     size = minRoomSize + Math.floor(Math.random() * (size - minRoomSize + 1));
 
     // Loop through each of the tile that this room with size size and origin (top left corner) y and x to will cover
@@ -79,11 +86,9 @@ export function generateMap(map, mapSize, minRoomSize, maxRoomSize, staticMargin
   function roomScan(tileY, tileX) {
     let size = 0;
     let availableSizes = [];
-
     if (map[tileY][tileX].terrain === 0) {
-      for (let roomSize = minRoomSize; roomSize < maxRoomSize; roomSize++) {
+      for (let roomSize = minRoomSize; roomSize <= maxRoomSize; roomSize++) {
         let roomAvailable = true;
-
         for (let feelerY = tileY; feelerY < tileY + roomSize; feelerY++) {
           for (let feelerX = tileX; feelerX < tileX + roomSize; feelerX++) {
             if (feelerY > map.length - 1 || feelerX > map.length - 1 || map[feelerY][feelerX].terrain !== 0) {
@@ -545,167 +550,175 @@ export function handleDialogue(map, floor, player, flags, dialogue, object) {
 export function handleUserInput(key, map, floor, player, flags, dialogue) {
   let playerNextY = 0;
   let playerNextX = 0;
-
-  switch(key) {
-    // Left key
-    case 37:
-    case 65:
-      playerNextY = player.y;
-      playerNextX = player.x - 1;
-
-      break;
-    // Up key or W key
-    case 38:
-    case 87:
-      playerNextY = player.y - 1;
-      playerNextX = player.x;
-
-      break;
-    // Right key
-    case 39:
-    case 68:
-      playerNextY = player.y;
-      playerNextX = player.x + 1;
-
-      break;
-    // Down Key
-    case 40:
-    case 83:
-      playerNextY = player.y + 1;
-      playerNextX = player.x;
-
-      break;
-  }
-
   let curTile = map[player.y][player.x];
-  let nextTile = map[playerNextY][playerNextX];
+  let nextTile = null;
+  let movementKeys = [37, 38, 39, 40, 65, 68, 83, 87];
+  let isMovementKey = false;
   let triggerDialogue = false;
 
-  // If the tile is potentially traversable
-  if (nextTile.terrain === 2 && flags.inDialogue === false && player.hp > 0) {
-    let objectId = nextTile.object.id;
-    let objectType = nextTile.object.type;
-    let objectName = nextTile.object.name;
+  if (movementKeys.indexOf(key) !== -1) {
+    isMovementKey = true;
 
-    let movePlayer = false;
-    let clearObject = false;
-    let replaceObject = null;
+    switch(key) {
+      // Left key
+      case 37:
+      case 65:
+        playerNextY = player.y;
+        playerNextX = player.x - 1;
 
-    // If it is an empty, traversable tile
-    if (objectId === null) {
-      movePlayer = true;
+        break;
+      // Up key or W key
+      case 38:
+      case 87:
+        playerNextY = player.y - 1;
+        playerNextX = player.x;
+
+        break;
+      // Right key
+      case 39:
+      case 68:
+        playerNextY = player.y;
+        playerNextX = player.x + 1;
+
+        break;
+      // Down Key
+      case 40:
+      case 83:
+        playerNextY = player.y + 1;
+        playerNextX = player.x;
+
+        break;
+      default:
+        break;
     }
-    // Else if it contains a consumable item
-    else if (objectId < 1000) {
-      let item = nextTile.object;
-      let itemAffectedStat = nextTile.object.affected;
-      let itemEffect = nextTile.object.effect;
 
-      // If the affected stat is HP
-      if (itemAffectedStat === "hp") {
-        let maxHP = player.mhp;
+    nextTile = map[playerNextY][playerNextX];
+  }
 
-        player[itemAffectedStat] = player[itemAffectedStat] + itemEffect;
+  if (isMovementKey) {
+    // If the tile is potentially traversable
+    if (nextTile.terrain === 2 && flags.inDialogue === false && player.hp > 0) {
+      let objectId = nextTile.object.id;
+      let objectType = nextTile.object.type;
+      let objectName = nextTile.object.name;
 
-        // Maintain HP below Max HP
-        if (player[itemAffectedStat] > maxHP) {
-          player[itemAffectedStat] = maxHP;
+      let movePlayer = false;
+      let clearObject = false;
+      let replaceObject = null;
+
+      // If it is an empty, traversable tile
+      if (objectId === null) {
+        movePlayer = true;
+      }
+      // Else if it contains a consumable item
+      else if (objectId < 1000) {
+        let item = nextTile.object;
+        let itemAffectedStat = nextTile.object.affected;
+        let itemEffect = nextTile.object.effect;
+
+        // If the affected stat is HP
+        if (itemAffectedStat === "hp") {
+          let maxHP = player.mhp;
+
+          player[itemAffectedStat] = player[itemAffectedStat] + itemEffect;
+
+          // Maintain HP below Max HP
+          if (player[itemAffectedStat] > maxHP) {
+            player[itemAffectedStat] = maxHP;
+          }
         }
-      }
-      // If the item is a weapon
-      else if (objectType === "Weapon"){
-        let weaponId = objectId;
+        // If the item is a weapon
+        else if (objectType === "Weapon"){
+          let weaponId = objectId;
 
-        if (player.weaponId !== "") {
-          replaceObject = player.weaponId;
+          if (player.weaponId !== "") {
+            replaceObject = player.weaponId;
+          }
+
+          player.weapon = objectName;
+          player.weaponId = weaponId;
+          player.weaponAttack = itemEffect;
+
+          updatePlayerStats(player);
         }
 
-        player.weapon = objectName;
-        player.weaponId = weaponId;
-        player.weaponAttack = itemEffect;
-
-        updatePlayerStats(player);
-      }
-
-      if (item.dialogueid !== null) {
-        triggerDialogue = true;
-      }
-
-      clearObject = true;
-      movePlayer = true;
-    }
-    // If the object is an enemy
-    else if (objectId > 1000 && objectId < 2000) {
-      let enemy = nextTile.object;
-
-      // Decrease player HP
-      player.hp = player.hp - Math.floor(enemy.attack * (0.85 + 0.15 * Math.random()));
-      // Decrease enemy HP
-      enemy.hp = enemy.hp - Math.floor(player.attack * (0.85 + 0.15 * Math.random()));
-
-      console.log(enemy)
-
-      // Player death is handled by GameController.js in handleUserInput()
-
-      // Handling enemy death
-      if (enemy.hp < 1) {
-        player.xp = player.xp + enemy.xp;
-
-        updatePlayerStats(player);
-
-        if (enemy.dialogueid !== null) {
+        if (item.dialogueid !== null) {
           triggerDialogue = true;
         }
 
         clearObject = true;
+        movePlayer = true;
+      }
+      // If the object is an enemy
+      else if (objectId > 1000 && objectId < 2000) {
+        let enemy = nextTile.object;
+
+        // Decrease player HP
+        player.hp = player.hp - Math.floor(enemy.attack * (0.85 + 0.15 * Math.random()));
+        // Decrease enemy HP
+        enemy.hp = enemy.hp - Math.floor(player.attack * (0.85 + 0.15 * Math.random()));
+
+        // Player death is handled by GameController.js in handleUserInput()
+
+        // Handling enemy death
+        if (enemy.hp < 1) {
+          player.xp = player.xp + enemy.xp;
+
+          updatePlayerStats(player);
+
+          if (enemy.dialogueid !== null) {
+            triggerDialogue = true;
+          }
+
+          clearObject = true;
+        }
+
+        if (player.hp < 1) {
+          player.hp = 0;
+
+          handleDialogue(map, floor, player, flags, dialogue, {dialogueid: 3099})
+        }
+      }
+      // If the object is an NPC
+      else if (objectId > 9000 && objectId < 10000) {
+        let npc = nextTile.object;
+
+        if (npc.dialogueid !== null) {
+          triggerDialogue = true;
+        }
       }
 
-      if (player.hp < 1) {
-        player.hp = 0;
+      // Move the player and record the new position
+      if (movePlayer && flags.inDialogue === false) {
+        curTile.player = "false";
+        nextTile.player = "true";
+        player.y = playerNextY;
+        player.x = playerNextX;
+      }
 
-        handleDialogue(map, floor, player, flags, dialogue, {dialogueid: 3099})
+      if (triggerDialogue) {
+        handleDialogue(map, floor, player, flags, dialogue, nextTile.object);
+      }
+
+      // Clear the tile of the pervious object
+      if (clearObject) {
+        nextTile.object = initialObject;
+      }
+
+      // Drop the previous weapon if the player is already holding one
+      if (replaceObject !== null) {
+        nextTile.object = assets.items[replaceObject];
       }
     }
-    // If the object is an NPC
-    else if (objectId > 9000 && objectId < 10000) {
-      let npc = nextTile.object;
-
-      if (npc.dialogueid !== null) {
-        triggerDialogue = true;
-      }
-    }
-
-    // Move the player and record the new position
-    if (movePlayer && flags.inDialogue === false) {
-      curTile.player = "false";
-      nextTile.player = "true";
-      player.y = playerNextY;
-      player.x = playerNextX;
-    }
-
-    if (triggerDialogue) {
-      handleDialogue(map, floor, player, flags, dialogue, nextTile.object);
-    }
-
-    // Clear the tile of the pervious object
-    if (clearObject) {
-      nextTile.object = initialObject;
-    }
-
-    // Drop the previous weapon if the player is already holding one
-    if (replaceObject !== null) {
-      nextTile.object = assets.items[replaceObject];
+    else if (nextTile.terrain === 99) {
+      console.log("nya")
+      flags.changeLevel = true;
     }
   }
   else if (flags.inDialogue) {
-    let movementKeys = [37, 38, 39, 40, 65, 68, 83, 87];
-
     if (movementKeys.indexOf(key) === -1) {
       handleDialogue(map, floor, player, flags, dialogue);
     }
-  }
-  else if (nextTile.terrain === 99) {
-    flags.changeLevel = true;
   }
 }
 

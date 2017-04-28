@@ -14,7 +14,8 @@
   margin: 0 auto;
   overflow: hidden;
   border: 2px dashed #AAA;
-  background-color: white;
+  background-image: url(images/StageBackgroud.jpg);
+  background-size: contain;
 }
 
 .GameController-infoPanel {

@@ -23,7 +23,8 @@ class StartScreen extends React.Component {
       width: "100%",
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center"
+      justifyContent: "center",
+      color: "white"
     };
 
     return(
