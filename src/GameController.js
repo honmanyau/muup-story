@@ -43,7 +43,7 @@ class GameController extends React.Component {
       showStartScreen: true,
       mode: null,
       map: [],
-      floor: 1,
+      floor: 0,
       player: initialPlayer,
       inDialogue: false,
       dialogue: initialDialogue
@@ -63,28 +63,15 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      showStartScreen: false,
-    });
-    this.generateNewlevel(this.state.floor);
   }
 
   handleStartScreenInput(mode) {
-    switch(mode) {
-      case "story":
-        this.setState({
-          showStartScreen: false,
-          mode: "story"
-        });
-
-        this.generateNewlevel(this.state.floor);
-
-        break;
-      case "endless":
-        break;
-      default:
-        break;
-    }
+    this.setState({
+      showStartScreen: false,
+      mode: mode
+    }, function() {
+      this.generateNewlevel(this.state.floor);
+    });
   }
 
   generateNewlevel(floor) {
@@ -104,22 +91,18 @@ class GameController extends React.Component {
     this.marginVariability = 3;
     this.corridorAmountBias = 0.3;
 
-    if (floor === 0 || floor === 5) {
-      // Can be tidied up here, revisit once dimension-related changes are settled
+    if (this.state.mode === "story" && floor === 0 || floor === 5) {
       this.mapSize = 15;
       this.minRoomSize = 15;
       this.maxRoomSize = 16;
       this.staticMargin = 1;
       this.marginVariability = 0;
       this.corridorAmountBias = 0;
+    }
 
-      logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      logic.decorateMap(map, floor, player, flags, dialogue);
-    }
-    else {
-      logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
-      logic.decorateMap(map, floor, player, flags, dialogue);
-    }
+    logic.generateMap(map, this.mapSize, this.minRoomSize, this.maxRoomSize, this.staticMargin, this.marginVariability, this.corridorAmountBias);
+
+    logic.decorateMap(map, floor, player, flags, dialogue, this.state.mode);
 
     this.setState({
       map: map,
@@ -147,17 +130,18 @@ class GameController extends React.Component {
       let nextFloor = this.state.floor + 1;
 
       this.setState({
-        floor: nextFloor,
+        floor: nextFloor
       });
 
       this.generateNewlevel(nextFloor);
     }
     else if (player.hp === 0 && flags.inDialogue === false) {
-      console.log("Nya")
       this.setState({
+        showStartScreen: true,
         player: initialPlayer,
         floor: 0,
-        showStartScreen: true
+        inDialogue: false,
+        dialogue: initialDialogue
       });
     }
     else {

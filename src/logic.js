@@ -711,30 +711,54 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
 
 
 
-export function decorateMap(map, floor, player, flags, dialogue) {
-  if (floor === 0) {
-    placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
-    placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3001);
-  }
-  else if (floor === 5) {
-    placeObject(map, floor, player, "player", player.id, 1, [11, 11]);
-    placeObject(map, floor, player, "enemy", "1199", 1, [7, 7]);
-    placeObject(map, floor, player, "item", "101", 8);
-  }
-  else {
-    let spawnWeaponId = "70" + floor;
+export function decorateMap(map, floor, player, flags, dialogue, mode = null) {
+  if (mode === "story") {
+    if (floor === 0) {
+      placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
+      placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3001);
+    }
+    else if (floor === 5) {
+      placeObject(map, floor, player, "player", player.id, 1, [11, 11]);
+      placeObject(map, floor, player, "enemy", "1199", 1, [7, 7]);
+      placeObject(map, floor, player, "item", "101", 8);
+    }
+    else {
+      let spawnWeaponId = "70" + floor;
 
-    if (floor === 1) {
-      player.weapon = "Caliburn Replica";
-      player.weaponId = 700;
-      player.weaponAttack = 9;
+      if (floor === 1) {
+        player.weapon = "Caliburn Replica";
+        player.weaponId = 700;
+        player.weaponAttack = 9;
 
-      updatePlayerStats(player);
+        updatePlayerStats(player);
+      }
+
+      placeObject(map, floor, player, "player", player.id);
+      placeObject(map, floor, player, "item", "101", 20);
+      placeObject(map, floor, player, "item", spawnWeaponId);
+
+      placeObject(map, floor, player, "enemy", "1101", 5);
+      placeObject(map, floor, player, "enemy", "1102", 10);
+      placeObject(map, floor, player, "enemy", "1103", 15);
+      placeObject(map, floor, player, "enemy", "1104", 10);
+      placeObject(map, floor, player, "enemy", "1105", 5);
+
+      placeObject(map, floor, player, "exit");
+    }
+  }
+  else if (mode === "endless") {
+    player.weapon = "Exalibur";
+
+    if (floor > 0) {
+      player.weapon = "Excalibur" + "+" + floor;
     }
 
+    player.weaponId = null;
+    player.weaponAttack = 9 + floor * 2;
+    player.attack = player.weaponAttack + player.level;
+
     placeObject(map, floor, player, "player", player.id);
-    placeObject(map, floor, player, "item", "101", 30);
-    placeObject(map, floor, player, "item", spawnWeaponId);
+    placeObject(map, floor, player, "item", "101", 20);
 
     placeObject(map, floor, player, "enemy", "1101", 5);
     placeObject(map, floor, player, "enemy", "1102", 10);
