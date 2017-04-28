@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './GameController.css'
+import './GameController.css';
 
 class InfoPanel extends React.Component {
   render() {

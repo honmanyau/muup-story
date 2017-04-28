@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import './GameController.css'
-import DialogueBox from './DialogueBox'
-import TestPanel from './TestPanel.js'
-import InfoPanel from './InfoPanel.js'
-// import Map from './Map.js'
-import PMap from './PMap.js'
-import * as logic from './logic.js'
-import * as assets from './assets.js'
+import './GameController.css';
+import StartScreen from './StartScreen';
+import DialogueBox from './DialogueBox';
+import TestPanel from './TestPanel.js';
+import InfoPanel from './InfoPanel.js';
+// import Map from './Map.js';
+import PMap from './PMap.js';
+import * as logic from './logic.js';
+import * as assets from './assets.js';
 
 const initialPlayer = {
   id: "player",
@@ -34,7 +35,12 @@ class GameController extends React.Component {
   constructor(props) {
     super(props);
 
+    this.tileSize = 40;
+    this.levelWrapperY = 12;
+    this.levelWrapperX = 18;
+
     this.state = {
+      showStartScreen: true,
       map: [],
       floor: 0,
       player: initialPlayer,
@@ -42,6 +48,7 @@ class GameController extends React.Component {
       dialogue: initialDialogue
     };
 
+    this.handleStartScreenInput = this.handleStartScreenInput.bind(this);
     this.generateNewlevel = this.generateNewlevel.bind(this);
     this.handleUserInput = this.handleUserInput.bind(this);
   }
@@ -55,7 +62,24 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    this.generateNewlevel(this.state.floor);
+    //this.generateNewlevel(this.state.floor);
+  }
+
+  handleStartScreenInput(mode) {
+    switch(mode) {
+      case "story":
+        this.setState({
+          showStartScreen: false,
+        });
+
+        this.generateNewlevel(this.state.floor);
+        
+        break;
+      case "endless":
+        break;
+      default:
+        break;
+    }
   }
 
   generateNewlevel(floor) {
@@ -67,11 +91,6 @@ class GameController extends React.Component {
       inDialogue: this.state.inDialogue
     };
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
-
-    this.tileSize = 40;
-    this.levelWrapperSize = 12;
-    this.levelWrapperY = 12;
-    this.levelWrapperX = 18;
 
     this.mapSize = 30;
     this.minRoomSize = 8;
@@ -128,7 +147,11 @@ class GameController extends React.Component {
       this.generateNewlevel(nextFloor);
     }
     else if (player.hp < 1) {
-      this.generateNewlevel(0);
+      this.setState({
+        player: initialPlayer,
+        floor: 0,
+        showStartScreen: true
+      });
     }
     else {
       this.setState({
@@ -178,13 +201,25 @@ class GameController extends React.Component {
       width: this.levelWrapperX * tileSize
     }
 
+
+    let gameWrapperContent = null;
+
+    if (this.state.showStartScreen) {
+      gameWrapperContent = <StartScreen onStartScreenButtonClick={this.handleStartScreenInput} />;
+    }
+    else {
+      gameWrapperContent = [
+        <InfoPanel player={player} floor={this.state.floor} />,
+        <PMap map={this.state.map} style={pMapOffsetStyles} />,
+        <div className="GameController-fog" style={levelWrapperStyles}></div>,
+        <DialogueBox dialogue={this.state.dialogue} />
+      ];
+    }
+
     return (
-      <div className="GameController-gameContainer">
-        <div className="GameController-levelWrapper" style={levelWrapperStyles}>
-          <InfoPanel player={player} floor={this.state.floor} />
-          <PMap map={this.state.map} style={pMapOffsetStyles} />
-          <div className="GameController-fog" style={levelWrapperStyles}></div>
-          <DialogueBox dialogue={this.state.dialogue} />
+      <div className="GameController-mainContainer">
+        <div className="GameController-gameWrapper" style={levelWrapperStyles}>
+          {gameWrapperContent}
         </div>
       </div>
     );

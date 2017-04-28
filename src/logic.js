@@ -1,4 +1,4 @@
-import * as assets from './assets.js'
+import * as assets from './assets.js';
 // All parameters used in the functions here are always passed from GameController.js
 
 const initialObject = {
@@ -643,8 +643,9 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
       // Decrease enemy HP
       enemy.hp = enemy.hp - Math.floor(player.attack * (0.85 + 0.15 * Math.random()));
 
-      // Player death is handled by GameController.js
+      // Player death is handled by GameController.js in handleUserInput()
 
+      // Handling enemy death
       if (enemy.hp < 1) {
         player.xp = player.xp + enemy.xp;
 
