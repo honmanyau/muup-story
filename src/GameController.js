@@ -62,7 +62,10 @@ class GameController extends React.Component {
   }
 
   componentDidMount() {
-    //this.generateNewlevel(this.state.floor);
+    this.setState({
+      showStartScreen: false,
+    });
+    this.generateNewlevel(this.state.floor);
   }
 
   handleStartScreenInput(mode) {
@@ -73,7 +76,7 @@ class GameController extends React.Component {
         });
 
         this.generateNewlevel(this.state.floor);
-        
+
         break;
       case "endless":
         break;
@@ -131,7 +134,8 @@ class GameController extends React.Component {
     let player = JSON.parse(JSON.stringify(this.state.player));
     let flags = {
       changeLevel: false,
-      inDialogue: this.state.inDialogue
+      inDialogue: this.state.inDialogue,
+      returnToTitle: false
     };
     let dialogue = JSON.parse(JSON.stringify(this.state.dialogue));
 
@@ -146,7 +150,8 @@ class GameController extends React.Component {
 
       this.generateNewlevel(nextFloor);
     }
-    else if (player.hp < 1) {
+    else if (player.hp === 0 && flags.inDialogue === false) {
+      console.log("Nya")
       this.setState({
         player: initialPlayer,
         floor: 0,

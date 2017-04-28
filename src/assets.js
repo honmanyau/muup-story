@@ -516,6 +516,19 @@ export const dialogues = {
       },
     }
   },
+  "3099": {
+    "id": 3099,
+    "name": "Muup Death",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Muup is corrupted by darkness and slowly fades away--",
+        "triggers": []
+      }
+    }
+  },
   "3200": {
     "id": 3200,
     "name": "Ayrithlia's Last Words",

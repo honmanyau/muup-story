@@ -582,7 +582,7 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
   let triggerDialogue = false;
 
   // If the tile is potentially traversable
-  if (nextTile.terrain === 2 && flags.inDialogue === false) {
+  if (nextTile.terrain === 2 && flags.inDialogue === false && player.hp > 0) {
     let objectId = nextTile.object.id;
     let objectType = nextTile.object.type;
     let objectName = nextTile.object.name;
@@ -656,6 +656,12 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
         }
 
         clearObject = true;
+      }
+
+      if (player.hp < 1) {
+        player.hp = 0;
+
+        handleDialogue(map, floor, player, flags, dialogue, {dialogueid: 3099})
       }
     }
     // If the object is an NPC
