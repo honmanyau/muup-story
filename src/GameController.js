@@ -93,7 +93,7 @@ class GameController extends React.Component {
     this.marginVariability = 3;
     this.corridorAmountBias = 0.3;
 
-    if (this.state.mode === "story" && floor === 0 || floor === 5) {
+    if (this.state.mode === "story" && floor === 0 || floor > 4) {
       this.mapSize = 15;
       this.minRoomSize = 13;
       this.maxRoomSize = 13;

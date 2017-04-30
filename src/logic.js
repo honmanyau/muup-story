@@ -676,7 +676,7 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
         if (player.hp < 1) {
           player.hp = 0;
 
-          handleDialogue(map, floor, player, flags, dialogue, {dialogueid: 3099})
+          handleDialogue(map, floor, player, flags, dialogue, {dialogueid: 3199});
         }
       }
       // If the object is an NPC
@@ -724,16 +724,21 @@ export function handleUserInput(key, map, floor, player, flags, dialogue) {
 
 
 
-export function decorateMap(map, floor, player, flags, dialogue, mode = null) {
+export function decorateMap(map, floor, player, flags, dialogue, mode) {
   if (mode === "story") {
     if (floor === 0) {
       placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
       placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3001);
     }
     else if (floor === 5) {
-      placeObject(map, floor, player, "player", player.id, 1, [11, 11]);
-      placeObject(map, floor, player, "enemy", "1199", 1, [7, 7]);
+      placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
+      placeObject(map, floor, player, "enemy", "1199", 1, [4, 4]);
       placeObject(map, floor, player, "item", "101", 8);
+      placeObject(map, floor, player, "item", "999", 1);
+    }
+    else if (floor === 6) {
+      placeObject(map, floor, player, "player", player.id, 1, [7, 7]);
+      placeObject(map, floor, player, "npc", "9001", 1, [5, 7], 3106);
     }
     else {
       let spawnWeaponId = "70" + floor;
@@ -744,6 +749,13 @@ export function decorateMap(map, floor, player, flags, dialogue, mode = null) {
         player.weaponAttack = 9;
 
         updatePlayerStats(player);
+      }
+
+      // Trigger floor-specific dialogue at the beginning of ever flooor, id = 3101-3104
+      if (floor > 0 && floor < 5) {
+        let floorDialogueId = "310" + floor;
+
+        handleDialogue(map, floor, player, flags, dialogue, {dialogueid: floorDialogueId});
       }
 
       placeObject(map, floor, player, "player", player.id);

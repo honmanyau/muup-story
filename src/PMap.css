@@ -1,11 +1,12 @@
 :root {
   --tile-size: 40px;
-  --tile-border: 1px solid white;
+  --tile-border: 1px solid transparent;
 }
 
 .Map {
   position: absolute;
   transform: rotateX(54.7deg) rotateZ(45deg);
+  opacity: 0.9;
 }
 
 .Map-tileWrapper {

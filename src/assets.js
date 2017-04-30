@@ -174,7 +174,7 @@ export const enemies = {
     "attack": null,
     "xp": null,
     "loot": [],
-    "dialogueid": 3200
+    "dialogueid": 3105
   }
 }
 
@@ -552,21 +552,72 @@ export const dialogues = {
       },
     }
   },
-  "3099": {
-    "id": 3099,
-    "name": "Muup Death",
+  "3101": {
+    "id": 3101,
+    "name": "Story First Floor",
     "type": "Dialogue",
     "content": {
       "0": {
         "character": null,
         "characterid": "voiceover",
-        "text": "--Muup is corrupted by darkness and slowly fades away--",
+        "text": "--Floor of Spring--",
+        "triggers": []
+      },
+      "1": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--The sword from Alice loses its shine and power--",
+        "triggers": []
+      },
+      "2": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "So it wasn't my imagination that Alice looked shifty for a moment...",
         "triggers": []
       }
     }
   },
-  "3200": {
-    "id": 3200,
+  "3102": {
+    "id": 3102,
+    "name": "Story Second Floor",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Floor of Summer--",
+        "triggers": []
+      }
+    }
+  },
+  "3103": {
+    "id": 3103,
+    "name": "Story Third Floor",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Floor of Autumn--",
+        "triggers": []
+      }
+    }
+  },
+  "3104": {
+    "id": 3104,
+    "name": "Story Third Floor",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Floor of Winter--",
+        "triggers": []
+      }
+    }
+  },
+  "3105": {
+    "id": 3105,
     "name": "Ayrithlia's Last Words",
     "type": "Dialogue",
     "content": {
@@ -583,7 +634,7 @@ export const dialogues = {
         "triggers": [
           {
             "type": "placeObject",
-            "coordinates": [],
+            "coordinates": [7, 7],
             "objecttype": "exit",
             "objectid": null,
             "objectamount": 1,
@@ -591,6 +642,104 @@ export const dialogues = {
           }
         ]
       },
+    }
+  },
+  "3106": {
+    "id": 3106,
+    "name": "Story Mode Ending",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "Welcome back, little Muup!",
+        "triggers": []
+      },
+      "1": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "I sense that the forest is no longer in danger.  What happened in the forest?",
+        "triggers": []
+      },
+      "2": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "I aimlessly cleansed crystals of darkness that don't actually move for four seasons.",
+        "triggers": []
+      },
+      "3": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "In the end I confronted someone called Arythlia because that seemed like the natural thing to do.",
+        "triggers": []
+      },
+      "4": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "She didn't move either.  She did say that it's not the end though.",
+        "triggers": []
+      },
+      "5": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "Oh... Arythlia...",
+        "triggers": []
+      },
+      "6": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "Alice?",
+        "triggers": []
+      },
+      "7": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "It's nothing, little Muup...",
+        "triggers": []
+      },
+      "8": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "There are still some crystals of darkness left in the forest.",
+        "triggers": []
+      },
+      "9": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "Any help that you can offer would be greatly appreciated, little Muup.",
+        "triggers": []
+      },
+      "10": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Endless Mode can be accessed from the start screen--",
+        "triggers": []
+      },
+      "11": {
+        "character": "Alice",
+        "characterid": 9001,
+        "text": "You should get some rest for now.  Welcome back again, little Muup! I'll make you dinner!",
+        "triggers": []
+      },
+      "12": {
+        "character": "Muup",
+        "characterid": "player",
+        "text": "I'm not little...",
+        "triggers": []
+      }
+    }
+  },
+  "3199": {
+    "id": 3199,
+    "name": "Muup Death",
+    "type": "Dialogue",
+    "content": {
+      "0": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Muup is corrupted by darkness and slowly fades away--",
+        "triggers": []
+      }
     }
   }
 }
