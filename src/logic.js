@@ -760,13 +760,14 @@ export function decorateMap(map, floor, player, flags, dialogue, mode) {
 
       placeObject(map, floor, player, "player", player.id);
       placeObject(map, floor, player, "item", "101", 20);
-      placeObject(map, floor, player, "item", spawnWeaponId);
 
       placeObject(map, floor, player, "enemy", "1101", 5);
       placeObject(map, floor, player, "enemy", "1102", 10);
       placeObject(map, floor, player, "enemy", "1103", 15);
       placeObject(map, floor, player, "enemy", "1104", 10);
       placeObject(map, floor, player, "enemy", "1105", 5);
+
+      placeObject(map, floor, player, "item", spawnWeaponId);
 
       placeObject(map, floor, player, "exit");
     }

@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import './GameController.css';
 import StartScreen from './StartScreen';
 import DialogueBox from './DialogueBox';
-import TestPanel from './TestPanel.js';
-import InfoPanel from './InfoPanel.js';
+import TestPanel from './TestPanel';
+import InfoPanel from './InfoPanel';
 // import Map from './Map.js';
-import PMap from './PMap.js';
-import * as logic from './logic.js';
-import * as assets from './assets.js';
+import PMap from './PMap';
+import * as logic from './logic';
+import * as assets from './assets';
 
 const initialPlayer = {
   id: "player",
@@ -19,7 +19,7 @@ const initialPlayer = {
   mhp: 50,
   hp: 50,
   attack: 10,
-  weapon: "Body slam",
+  weapon: "Body Slam",
   weaponId: "",
   weaponAttack: 9
 };

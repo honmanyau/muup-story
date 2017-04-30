@@ -13,9 +13,10 @@
   align-items: center;
   margin: 0 auto;
   overflow: hidden;
-  border: 2px dashed #AAA;
+  border: 1px solid #555;
   background-image: url(images/StageBackground.jpg);
   background-size: contain;
+  box-shadow: 0px 0px 8px black;
 }
 
 .GameController-infoPanel {
@@ -69,7 +70,7 @@
   box-sizing: border-box;
   border: 1px solid #777;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0px 0px 4px #555;
 }
 

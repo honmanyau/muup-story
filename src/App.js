@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
 import './App.css';
-import GameController from './GameController'
+import GameController from './GameController';
+import Footer from './Footer';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
         <GameController />
+        <Footer />
       </div>
     );
   }
