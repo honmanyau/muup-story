@@ -6,7 +6,7 @@ class InfoPanel extends React.Component {
     let player = this.props.player;
     let HPPercentage = player.hp / player.mhp * 100;
 
-    let HPBarFillWidth = {
+    const HPBarFillWidth = {
       width: HPPercentage + "%"
     };
 

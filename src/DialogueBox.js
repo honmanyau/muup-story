@@ -19,7 +19,7 @@ class DialogueBox extends React.Component {
       visibility = "visible";
     }
 
-    let dialogueBoxStyles = {
+    const dialogueBoxStyles = {
       visibility: visibility,
       textAlign: textAlign
     };

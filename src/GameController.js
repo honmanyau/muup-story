@@ -181,18 +181,17 @@ class GameController extends React.Component {
     */
 
     // These ensure that the player is always in focus and at the middle of the levelWrapper
-    let pMapOffsetStyles = {
+    const pMapOffsetStyles = {
       height: mapSize * tileSize,
       width: mapSize * tileSize,
       top: mapCenterOffsetY - playerYOffset,
       left: mapCenterOffsetX - playerXOffset
-    }
+    };
     // This allows the size of the playing field to be modified by changing this.mapSize and this.tileSize
-    let levelWrapperStyles = {
+    const levelWrapperStyles = {
       height: this.levelWrapperY * tileSize,
       width: this.levelWrapperX * tileSize
-    }
-
+    };
 
     let gameWrapperContent = null;
 
