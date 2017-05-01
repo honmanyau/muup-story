@@ -35,9 +35,9 @@ class GameController extends React.Component {
   constructor(props) {
     super(props);
 
-    this.tileSize = 40;
-    this.levelWrapperY = 12;
-    this.levelWrapperX = 18;
+    this.tileSize = 50;
+    this.levelWrapperY = 10;
+    this.levelWrapperX = 15;
     this.reserveEdge = true;
 
     this.state = {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './StartScreen.css';
 
 class StartScreen extends React.Component {
   constructor(props) {

@@ -207,7 +207,7 @@ export const dialogues = {
       "3": {
         "character": "Muup",
         "characterid": "player",
-        "text": "Oh... what happened? (Maybe I shouldn't have clicked on the Tutorial button).",
+        "text": "Oh... what happened? (Maybe I shouldn't have clicked on Story Mode).",
         "triggers": []
 
       },
@@ -247,13 +247,19 @@ export const dialogues = {
       "8": {
         "character": "Alice",
         "characterid": 9001,
-        "text": "That doesn't matter! Just get rid of it first, please!",
+        "text": "That doesn't matter now! Just get rid of it first, please!",
         "triggers": []
       },
       "9": {
         "character": null,
         "characterid": "voiceover",
-        "text": "--Attack the strange crystal by moving towards it using either the direction keys or A, S, D, W--",
+        "text": "--Attack the strange crystal by moving towards it--",
+        "triggers": []
+      },
+      "10": {
+        "character": null,
+        "characterid": "voiceover",
+        "text": "--Move with direction keys or A, S, D, and W--",
         "triggers": [
           {
             "type": "changeDialogue",
